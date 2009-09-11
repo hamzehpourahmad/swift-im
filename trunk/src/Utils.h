@@ -1,7 +1,7 @@
 /*
  *      Utils.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -20,23 +20,20 @@
 #ifndef Utils_h
 #define Utils_h
 
-#include <map>
+namespace Swift {
+  class Utils;
+};
 
-#include <glibmm/refptr.h>
-#include <gdkmm/pixbuf.h>
-
-#include "Protocol.h"
+#include <string>
+#include <glibmm/ustring.h>
 
 namespace Swift {
   class Utils {
     public:
-      void loadStatusImages();
-      bool createDir(Glib::ustring path, int mode = 0755);
-      Utils();
-      ~Utils();
-      Glib::RefPtr<Gdk::Pixbuf> getStatusImage(guint32 statusCode);
-      std::map <guint32, Glib::RefPtr<Gdk::Pixbuf> > statusImages;
-      Glib::ustring trimSlashes(Glib::ustring s);
+      static void openUri(std::string uri);
+      static bool createDir(Glib::ustring path, int mode = 0755);
+      static gint parseGint(std::string s);
+      static guint32 parseGuint32(std::string s);
   };
 };
 

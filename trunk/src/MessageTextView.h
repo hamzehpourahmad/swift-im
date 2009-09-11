@@ -1,7 +1,7 @@
 /*
  *      MessageTextView.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -20,13 +20,16 @@
 #ifndef MessageTextView_h
 #define MessageTextView_h
 
+namespace Swift {
+  class MessageTextView;
+};
+
 #include <gtkmm/textview.h>
 
 namespace Swift {
   class MessageTextView : public Gtk::TextView {
     public:
       MessageTextView();
-      virtual ~MessageTextView();
     protected:
       bool onKeyPressEvent(GdkEventKey* event);
   };

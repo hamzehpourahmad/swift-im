@@ -20,6 +20,10 @@
 #ifndef MainWindow_h
 #define MainWindow_h
 
+namespace Swift {
+  class MainWindow;
+};
+
 #include <gtkmm/window.h>
 #include <libglademm.h>
 #include <gtkmm/imagemenuitem.h>
@@ -29,6 +33,7 @@
 
 #include "ContactsTreeWidget.h"
 #include "StatusComboWidget.h"
+#include "MrimLoggedUser.h"
 
 namespace Swift {
   class MainWindow : public Gtk::Window {
@@ -38,11 +43,14 @@ namespace Swift {
       Gtk::Label *usernameLabel, *mailStatusLabel;
       Gtk::Image* userAvatarImage;
       StatusComboWidget* statusCombo;
-
     protected:
       // signal handlers
+      // GUI signals
       void menuItemExitOnActivate();
       void menuItemAboutOnActivate();
+      
+      // mrim signals
+      void onUserInfoReceive(UserInfo ui);
   };
 };
 

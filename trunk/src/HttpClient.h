@@ -1,7 +1,7 @@
 /*
  *      HttpClient.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,10 @@
 #ifndef HttpClient_h
 #define HttpClient_h
 
+namespace Swift {
+  class HttpClient;
+};
+
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -28,7 +32,6 @@
 
 #include <glibmm/main.h>
 #include <glibmm/ustring.h>
-#include <gtkmm/image.h>
 
 #include "SocketHeaders.h"
 
@@ -49,7 +52,7 @@ namespace Swift {
       HttpClient();
       ~HttpClient(){};
       void disconnect();
-      bool loadAvatar(std::string contactAddress, Gtk::Image *img, AvatarType atype);
+      Glib::RefPtr<Gdk::Pixbuf> loadAvatar(std::string contactAddress, AvatarType atype);
       bool checkAvatar(std::string contactAddress);
       DetailedAddress parseAddress(std::string contactAddress);
     private:

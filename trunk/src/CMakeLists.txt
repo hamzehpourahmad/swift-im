@@ -1,5 +1,5 @@
 # CMakeLists.txt - this file is part of Swift-IM, cross-platform IM client for Mail.ru
-# Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+# Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
@@ -27,47 +27,55 @@ INCLUDE_DIRECTORIES(${GTKMM_INCLUDE_DIRS} ${GTHREAD_INCLUDE_DIRS} ${LIBGLADEMM_I
 LINK_DIRECTORIES(${GTKMM_LIBRARY_DIRS} ${GTHREAD_LIBRARY_DIRS} ${LIBGLADEMM_LIBRARY_DIRS})
 
 #adding sources
-SET(PROJECT_SOURCES 
-    swift-im.cpp 
-    Application.cpp 
-    MainWindow.cpp 
-    LoginDialog.cpp 
-    ContactsTreeColumns.cpp 
-    ChatTabs.cpp 
-    ChatWindow.cpp 
-    HistoryTextView.cpp 
-    MrimClient.cpp 
-    ContactsTreeWidget.cpp 
-    MrimSignalClient.cpp 
-    MrimSignalServer.cpp 
-    MrimUtils.cpp 
-    HttpClient.cpp 
-    Utils.cpp 
-    StatusComboColumns.cpp 
-    StatusComboWidget.cpp 
+SET(PROJECT_SOURCES
+    Application.cpp
+    ChatTabs.cpp
+    ChatWindow.cpp
+    ContactsTreeColumns.cpp
+    ContactsTreeWidget.cpp
+    HistoryTextView.cpp
+    HttpClient.cpp
+    LoginDialog.cpp
+    MainWindow.cpp
     MessageTextView.cpp
+    MrimClient.cpp
+    MrimConnection.cpp
+    MrimContact.cpp
+    MrimGroup.cpp
+    MrimLoggedUser.cpp
+    MrimPacket.cpp
+    MrimSignalServer.cpp
+    MrimUtils.cpp
+    StatusComboColumns.cpp
+    StatusComboWidget.cpp
+    swift-im.cpp
+    Utils.cpp
     )
-SET(PROJECT_HEADERS 
-    Application.h 
-    MainWindow.h 
-    LoginDialog.h 
-    ContactsTreeColumns.h 
-    ChatTabs.h 
-    ChatWindow.h 
-    HistoryTextView.h 
-    MrimClient.h 
-    ContactsTreeWidget.h 
-    MrimSignalClient.h 
-    MrimSignalServer.h 
-    MrimUtils.h 
-    HttpClient.h 
-    Utils.h 
-    StatusComboColumns.h 
-    StatusComboWidget.h 
-    MessageTextView.h 
-    SocketHeaders.h 
-    Protocol.h 
+SET(PROJECT_HEADERS
+    Application.h
+    ChatTabs.h
+    ChatWindow.h
     Configure.h
+    ContactsTreeColumns.h
+    ContactsTreeWidget.h
+    HistoryTextView.h
+    HttpClient.h
+    LoginDialog.h
+    MainWindow.h
+    MessageTextView.h
+    MrimClient.h
+    MrimConnection.h
+    MrimContact.h
+    MrimGroup.h
+    MrimLoggedUser.h
+    MrimPacket.h
+    MrimSignalServer.h
+    MrimUtils.h
+    Protocol.h
+    SocketHeaders.h
+    StatusComboColumns.h
+    StatusComboWidget.h
+    Utils.h
     )
 
 #set g++ flags

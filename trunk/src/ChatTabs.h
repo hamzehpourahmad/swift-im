@@ -1,7 +1,7 @@
 /*
  *      ChatTabs.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ namespace Swift {
   const gint DEFAULT_TEXTVIEW_MARGIN = 10;
   const gint DEFAULT_TEXTVIEW_BORDERWIDTH = 5;
   const guint NOTIFY_TIMEOUT_INTERVAL = 10000;
+  // Structure for holding pointers to some needed widgets in each tab
   struct ChatTab {
     HistoryTextView* historyText;
     MessageTextView* messageText;
@@ -44,29 +45,33 @@ namespace Swift {
     Gtk::Label* notifyLabel;
     Gtk::Label* contactInfoLabel;
     Gtk::Label* tabCaption;
+    Glib::ustring address;
   };
-  typedef std::map <Glib::ustring, ChatTab> Tabs;
+  typedef std::vector <ChatTab> Tabs;
   class ChatTabs : public Gtk::Notebook {
     public:
       ChatTabs(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade);
       ~ChatTabs();
       void createTab(Glib::ustring contactAddress);
       void showTab(Glib::ustring contactAddress);
-      void closeTab(Glib::ustring contactAddress);
+      void closeTab(Tabs::iterator it);
+      void closeAll();
       void switchTab();
       void notifyWriting(Glib::ustring contactAddress);
       void updateStatus(MrimContact contact);
       void setUrgencyHint(MrimContact contact, bool urgent);
-      std::map <Gtk::Widget*, Glib::ustring> tabMap;
-      Tabs tabs;
-
+      Tabs::iterator getTab(Glib::ustring address);
+      Tabs::iterator getTab(gint pageNumber);
+      Tabs::iterator getCurrentTab();
+    
     private:
+      Tabs tabs;
       std::map <Glib::ustring, bool> isCreated, widgetsCreated;
 
     protected:
       // signal handlers
       void onSwitchTab(GtkNotebookPage *page, gint pageNumber);
-      void onCloseTabClicked(Glib::ustring contactAddress);
+      void onCloseTabClicked(Tabs::iterator it);
       bool onNotifyWritingExpire(Glib::ustring contactAddress);
       void onHistoryTextScrollChanged(Gtk::Adjustment* adjustment);
   };
