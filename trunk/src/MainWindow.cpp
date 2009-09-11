@@ -48,43 +48,7 @@ void MainWindow::menuItemExitOnActivate() {
 }
 
 void MainWindow::menuItemAboutOnActivate() {
-  appInstance->sigServer->signal_login_ack().emit();
-  appInstance->mUser->setStatus(STATUS_ONLINE);
-  appInstance->mUser->setAddress("localhost@localhost.kz");
-  UserInfo ui;
-  ui["MRIM.NICKNAME"] = "Local";
-  ui["MESSAGES.UNREAD"] = "128";
-  appInstance->sigServer->signal_user_info_receive().emit(ui);
-
-  GroupList gl;
-  ContactList cl;
-  MrimGroup gr;
-  gr.setName("Friends");
-  gr.setIndex(1);
-  gl.push_back(gr);
-  
-  MrimContact c;
-  c.setFlag(0);
-  c.setGroup(gr);
-  
-  c.setIndex(21);
-  c.setNickname("Someone");
-  c.setAddress("88talgat@mail.ru");
-  cl.push_back(c);
-  
-  c.setIndex(22);
-  c.setNickname("Buddy");
-  c.setAddress("abc@def.kz");
-  cl.push_back(c);
-  
-  c.setIndex(23);
-  c.setNickname("Robot");
-  c.setAddress("robot@mail.ru");
-  cl.push_back(c);
-  
-  appInstance->sigServer->signal_login_ack().emit();
-  appInstance->sigServer->signal_contact_list_receive().emit(gl, cl);
-  //appInstance->aboutDialog->present();
+  appInstance->aboutDialog->present();
 }
 
 void MainWindow::onUserInfoReceive(UserInfo ui) {
