@@ -35,4 +35,4 @@
 
 #endif // #ifdef G_OS_WIN32
 
-#endif // #ifndef SocketHeaders_h
+#endif // SocketHeaders_h

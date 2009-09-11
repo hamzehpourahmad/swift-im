@@ -1,7 +1,7 @@
 /*
  *      HistoryTextView.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 РљРѕР¶Р°РµРІ Р“Р°Р»С‹РјР¶Р°РЅ <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,9 @@
 
 using namespace Swift;
 
+
 HistoryTextView::HistoryTextView() {
+  appInstance->logEvent("HistoryTextView::HistoryTextView()", SEVERITY_DEBUG);
   tagTable = Gtk::TextBuffer::TagTable::create();
   buffer = Gtk::TextBuffer::create(tagTable);
   set_buffer(buffer);
@@ -50,9 +52,9 @@ HistoryTextView::HistoryTextView() {
 }
 
 Glib::ustring HistoryTextView::getFormattedTime() {
+  appInstance->logEvent("HistoryTextView::getFormattedTime()", SEVERITY_DEBUG);
   gchar dtbuf[128];
   time_t st;
-  struct tm stm;
   time(&st);
   guint sz = strftime(dtbuf, sizeof(dtbuf), "%c", localtime (&st));
   Glib::ustring result;
@@ -69,11 +71,12 @@ void HistoryTextView::newLine() {
 }
 
 void HistoryTextView::addOwnMessage(guint32 messageId, Glib::ustring body) {
+  appInstance->logEvent("HistoryTextView::addOwnMessage()", SEVERITY_DEBUG);
   MessageBounds newMessage;
   newMessage.beginMark = buffer->create_mark(buffer->end());
   newMessage.endMark = buffer->create_mark(buffer->end());
   insertTime();
-  buffer->insert_with_tag(buffer->end(), Application::getAppInstance()->mClient.userInfo["MRIM.NICKNAME"] + ": ", ownTag);
+  buffer->insert_with_tag(buffer->end(), appInstance->mUser->getNickname() + ": ", ownTag);
   buffer->move_mark(newMessage.beginMark, buffer->end());
   buffer->insert_with_tag(buffer->end(), body, underlinedTag);
   buffer->move_mark(newMessage.endMark, buffer->end());
@@ -82,10 +85,11 @@ void HistoryTextView::addOwnMessage(guint32 messageId, Glib::ustring body) {
 }
 
 void HistoryTextView::addReceivedMessage(Glib::ustring from, Glib::ustring body) {
-  MrimContact c = MrimUtils::getContactByAddress(&Application::getAppInstance()->mClient, from);
+  appInstance->logEvent("HistoryTextView::addReceivedMessage()", SEVERITY_DEBUG);
+  MrimContact c = appInstance->mUser->getContact(from);
   Glib::ustring author = from;
-  if(c.index != MRIMUTILS_CONTACT_NOT_FOUND) {
-    author = c.nickname;
+  if(c.getIndex() != 0) {
+    author = c.getNickname();
   }
   insertTime();
   buffer->insert_with_tag(buffer->end(), author + ": ", fromTag);
@@ -94,6 +98,7 @@ void HistoryTextView::addReceivedMessage(Glib::ustring from, Glib::ustring body)
 }
 
 void HistoryTextView::confirmMessage(guint32 messageId) {
+  appInstance->logEvent("HistoryTextView::confirmMessage()", SEVERITY_DEBUG);
   history[messageId].beginMark->get_iter();
   if(history[messageId].beginMark) {
     buffer->remove_all_tags(history[messageId].beginMark->get_iter(), history[messageId].endMark->get_iter());
@@ -101,6 +106,7 @@ void HistoryTextView::confirmMessage(guint32 messageId) {
 }
 
 void HistoryTextView::rejectMessage(guint32 messageId, Glib::ustring reason) {
+  appInstance->logEvent("HistoryTextView::rejectMessage()", SEVERITY_DEBUG);
   if(history[messageId].beginMark) {
     Glib::ustring message = buffer->get_text(history[messageId].beginMark->get_iter(), history[messageId].endMark->get_iter());
     buffer->insert_with_tag(buffer->end(), "Maybe your message: \n" + message + "\nwas not delivered. Server answer: " + reason, underlinedTag);

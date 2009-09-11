@@ -29,17 +29,18 @@ StatusComboWidget::StatusComboWidget(BaseObjectType* baseObject, const Glib::Ref
   treeModel = Gtk::TreeStore::create(columns);
   set_model(treeModel);
   Gtk::TreeModel::Row row;
-  Application* app = Application::getAppInstance();
-  std::map <guint32, Glib::RefPtr<Gdk::Pixbuf> >::iterator it;
-  for(it = app->utils.statusImages.begin(); it != app->utils.statusImages.end(); it++) {
-    if(it->first != STATUS_UNDETERMINATED) {
-      row = *(treeModel->append());
-      row[columns.statusCode] = it->first;
-      row[columns.statusTitle] = MrimUtils::getContactStatusByCode(it->first);
-      row[columns.statusIcon] = it->second;
-      set_active(row);
-      rowNumbers[it->first] = get_active_row_number();
-    }
+  std::vector<guint32> statusCodes;
+  statusCodes.push_back(STATUS_ONLINE);
+  statusCodes.push_back(STATUS_AWAY);
+  statusCodes.push_back(STATUS_FLAG_INVISIBLE);
+  statusCodes.push_back(STATUS_OFFLINE);
+  for(int i = 0; i < (int)statusCodes.size(); i++) {
+    row = *(treeModel->append());
+    row[columns.statusCode] = statusCodes[i];
+    row[columns.statusTitle] = MrimUtils::getContactStatusByCode(statusCodes[i]);
+    row[columns.statusIcon] = appInstance->getStatusImage(statusCodes[i]);
+    set_active(row);
+    rowNumbers[statusCodes[i]] = get_active_row_number();
   }
   pack_start(columns.statusIcon, false);
   pack_start(columns.statusTitle, false);
@@ -57,18 +58,18 @@ void StatusComboWidget::onChanged() {
        */
     }
     else if(row[columns.statusCode] != STATUS_UNDETERMINATED) {
-      if(Application::getAppInstance()->mrimLogged) {
+      if(appInstance->mUser->logged()) {
         /*
          * changing status
          */
-        Application::getAppInstance()->mClient.changeStatus(row[columns.statusCode]);
+        appInstance->mClient->changeStatus(row[columns.statusCode]);
       }
       else {
         /*
          * login
          */
-        Application::getAppInstance()->loginDialog->resetEntries();
-        Application::getAppInstance()->loginDialog->run();
+        appInstance->loginDialog->resetEntries();
+        appInstance->loginDialog->run();
       }
     }
   }
@@ -89,5 +90,5 @@ void StatusComboWidget::setStatusByCode(guint32 newStatus) {
 }
 
 void StatusComboWidget::restoreStatus() {
-  setStatusByCode(Application::getAppInstance()->mClient.getUserStatus());
+  setStatusByCode(appInstance->mUser->getStatus());
 }

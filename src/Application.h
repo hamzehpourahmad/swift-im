@@ -20,6 +20,16 @@
 #ifndef Application_h
 #define Application_h
 
+/*
+ * Represents running application
+ * Communication between other classes can be done using 'appInstance' macro.
+ * Instance of this class has pointers to instances of other classes.
+ */
+ 
+namespace Swift {
+  class Application;
+};
+
 #include <string>
 #include <map>
 
@@ -33,41 +43,53 @@
 #include "LoginDialog.h"
 #include "ChatWindow.h"
 #include "MrimSignalServer.h"
-#include "MrimSignalClient.h"
 #include "HttpClient.h"
 #include "Utils.h"
 #include "MrimClient.h"
+#include "MrimConnection.h"
+#include "MrimLoggedUser.h"
+
+#define appInstance Application::getInstance()
 
 namespace Swift {
+  enum LogSeverity {
+    SEVERITY_NOTICE,
+    SEVERITY_DEBUG,
+    SEVERITY_WARNING,
+    SEVERITY_FATALERROR
+  };
   class Application {
     public:
       Application();
       virtual ~Application();
-      static Application* getAppInstance();
       static void quit();
       void showMessage(const Glib::ustring title, const Glib::ustring message, const Glib::ustring secondary, Gtk::MessageType mType, Gtk::ButtonsType bType);
-
+      void logEvent(Glib::ustring message, LogSeverity svty);
+      static Application* getInstance();
+      Glib::RefPtr<Gdk::Pixbuf> getStatusImage(guint32 statusCode);
       MainWindow* mainWindow;
       LoginDialog* loginDialog;
       ChatWindow* chatWindow;
       Gtk::Dialog* aboutDialog;
-      MrimClient mClient;
+      MrimClient* mClient;
+      MrimConnection* mConnection;
       Glib::RefPtr<Gnome::Glade::Xml> xml;
-      MrimSignalClient sigClient;
-      MrimSignalServer sigServer;
-      HttpClient http;
-      Utils utils;
-      bool mrimLogged;
-      void openUriOnBrowser(std::string uri);
+      MrimSignalServer* sigServer;
+      HttpClient* http;
+      MrimLoggedUser* mUser;
       Glib::ustring getVariable(std::string key);
 
     private:
       std::map<std::string, Glib::ustring> variables;
-
+      std::map <guint32, Glib::RefPtr<Gdk::Pixbuf> > images;
+      Glib::RefPtr<Glib::IOChannel> logfile;
+      Glib::ustring getSeverityStr(LogSeverity svty);
       void initVariables();
+      void loadResources();
+      
     protected:
-
       // signal handlers
+      // @TODO remove these signal handlers from this class
       void onAboutCloseClicked();
       void onLinkButtonClicked();
   };

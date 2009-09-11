@@ -1,7 +1,7 @@
 /*
  *      MrimUtils.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -20,20 +20,22 @@
 #ifndef MrimUtils_h
 #define MrimUtils_h
 
-#include "MrimClient.h"
+#include <glibmm/ustring.h>
+#include <gdkmm/pixbuf.h>
 
 namespace Swift {
-  const guint MRIMUTILS_CONTACT_NOT_FOUND = 0;
+  class MrimUtils;
+};
+
+namespace Swift {
   class MrimUtils {
     public:
-      static MrimContact getContactByIndex(MrimClient* client, guint32 index);
-      static MrimContact getContactByAddress(MrimClient* client, Glib::ustring address);
       static Glib::ustring getContactStatusByCode(guint32 statusCode);
       static Glib::ustring getMessageStatusByCode(guint32 statusCode);
-      static Gtk::Image* prepareAvatar(Glib::ustring address);
+      static Glib::RefPtr<Gdk::Pixbuf> prepareAvatar(Glib::ustring address);
     private:
-      static bool getCachedAvatar(Glib::ustring address, Gtk::Image* img);
-      static void cacheAvatar(Glib::ustring address, Gtk::Image* img);
+      static Glib::RefPtr<Gdk::Pixbuf> getCachedAvatar(Glib::ustring address);
+      static void cacheAvatar(Glib::ustring address, Glib::RefPtr<Gdk::Pixbuf> pb);
   };
 };
 

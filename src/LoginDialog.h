@@ -20,6 +20,10 @@
 #ifndef LoginDialog_h
 #define LoginDialog_h
 
+namespace Swift {
+  class LoginDialog;
+};
+
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/button.h>

@@ -1,7 +1,7 @@
 /*
  *      Utils.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -17,81 +17,48 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <map>
-#include <iostream>
+#include <string>
+#include <sstream>
 
 #include <glib/gstdio.h>
 
 #include "Utils.h"
 #include "Application.h"
 
+
 using namespace Swift;
-
-Utils::Utils() {
-
-}
-
-Utils::~Utils() {
-  // We don't need to free status images, because we're using RefPtr for storing it
-
-}
-
-Glib::RefPtr<Gdk::Pixbuf> Utils::getStatusImage(guint32 statusCode) {
-  Glib::RefPtr<Gdk::Pixbuf> result;
-  std::map <guint32, Glib::RefPtr<Gdk::Pixbuf> >::iterator it = statusImages.find(statusCode);
-  if(it != statusImages.end()) {
-    result = it->second;
-  }
-  else {
-    result = statusImages[STATUS_UNDETERMINATED];
-  }
-  return result;
-}
-
-void Utils::loadStatusImages() {
-  /*
-   * Loading status images
-   */
-  std::vector<std::string> parts(4);
-  std::map<guint32, std::string> statuses;
-  std::map<guint32, std::string>::iterator it;
-  parts.push_back(Application::getAppInstance()->getVariable("SWIFTIM_DATA_DIR"));
-  parts.push_back("img");
-  parts.push_back("status");
-  statuses[STATUS_ONLINE] = "online.png";
-  statuses[STATUS_OFFLINE] = "offline.png";
-  statuses[STATUS_FLAG_INVISIBLE] = "invisible.png";
-  statuses[STATUS_AWAY] = "away.png";
-  statuses[STATUS_UNDETERMINATED] = "undeterminated.png";
-  for(it = statuses.begin(); it != statuses.end(); it++) {
-    parts.push_back(it->second);
-    try {
-      statusImages[it->first] = Gdk::Pixbuf::create_from_file(Glib::build_filename(parts));
-    }
-    catch(Glib::FileError& err) {
-      std::cerr << "Error loading status image. Glib::FileError description: " << err.what() << std::endl;
-    }
-    catch(Gdk::PixbufError& err) {
-      std::cerr << "Error loading status image. Gdk::PixbufError code: " << err.code() << std::endl;
-    }
-    parts.pop_back();
-  }
-}
-
-Glib::ustring Utils::trimSlashes(Glib::ustring s) {
-  Glib::ustring r = s;
-  if(r[0] == '/' || r[0] == '\\') {
-    r.erase(0, 1);
-  }
-  if(r[r.length() - 1] == '/' || r[r.length() - 1] == '\\') {
-    r.erase(r.length() - 1, 1);
-  }
-  return r;
-}
 
 bool Utils::createDir(Glib::ustring path, int mode) {
   if(Glib::file_test(path, Glib::FILE_TEST_IS_DIR)) {
     return true;
   }
   return g_mkdir(path.c_str(), mode) == 0;
+}
+
+void Utils::openUri(std::string uri) {
+  appInstance->logEvent("Utils::openUri()", SEVERITY_DEBUG);
+#ifdef G_OS_WIN32
+  ShellExecute(NULL, "open", uri.c_str(), NULL, NULL, SW_SHOWNORMAL);
+#else
+  std::vector<std::string> argv(2);
+  argv[0] = "xdg-open";
+  argv[1] = uri;
+  Glib::spawn_async("./", argv, Glib::SPAWN_SEARCH_PATH);
+#endif
+}
+
+gint Utils::parseGint(std::string s) {
+  std::stringstream str;
+  gint result = 0;
+  str << s;
+  str >> result;
+  return result;
+}
+
+guint32 Utils::parseGuint32(std::string s) {
+  std::stringstream str;
+  guint32 result = 0;
+  str << s;
+  str >> result;
+  return result;
 }

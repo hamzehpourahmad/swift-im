@@ -20,6 +20,10 @@
 #ifndef StatusComboWidget_h
 #define StatusComboWidget_h
 
+namespace Swift {
+  class StatusComboWidget;
+};
+
 #include <map>
 
 #include <libglademm.h>

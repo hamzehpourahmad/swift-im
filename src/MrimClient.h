@@ -1,7 +1,7 @@
 /*
  *      MrimClient.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -20,116 +20,28 @@
 #ifndef MrimClient_h
 #define MrimClient_h
 
-#include <errno.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <vector>
-#include <map>
+namespace Swift {
+  class MrimClient;
+};
 
-#include <glibmm/main.h>
-#include <glibmm/ustring.h>
-#include <gtkmm/image.h>
-
-#include "Protocol.h"
-#include "SocketHeaders.h"
+#include "MrimPacket.h"
+#include "MrimConnection.h"
 
 namespace Swift {
-  const gulong CONTACT_FETCH_DELAY = 100000;
-  const gulong GROUP_FETCH_DELAY = 100000;
-  const gulong SEND_WAIT_TIME = 1000;
-  const Glib::ustring GET_IPPORT_HOST = "mrim.mail.ru";
-  const gint GET_IPPORT_PORT = 2042;
-  class MrimClient;
-
-  struct MrimGroup {
-    guint32 index;
-    guint32 flag;
-    Glib::ustring name;
-  };
-
-  struct MrimContact {
-    guint32 index;
-    guint32 flag;
-    guint32 group;
-    Glib::ustring address;
-    Glib::ustring nickname;
-    guint32 serverFlags;
-    guint32 status;
-    Gtk::Image* avatar;
-  };
-
-  struct MrimMessage {
-    guint32 seq;
-    time_t time;
-  };
-
-  typedef std::map <Glib::ustring, Glib::ustring> UserInfo;
-  typedef std::vector <MrimGroup> GroupList;
-  typedef std::vector <MrimContact> ContactList;
-  typedef std::vector <MrimMessage> MessageList;
-
   class MrimClient {
     public:
       // methods
       MrimClient();
-      virtual ~MrimClient();
-      bool connect();
-      void disconnect();
-      void logout();
-      Glib::ustring login(Glib::ustring login, Glib::ustring password, guint32 networkStatus);
-      void changeStatus(guint32 newStatus);
-      guint32 sendMessage(Glib::ustring destination, Glib::ustring message, guint32 flags);
-      guint32 getUserStatus();
-
-      // members
-      UserInfo userInfo;
-      GroupList groupList;
-      ContactList contactList;
+      bool login(Glib::ustring password);
+      bool changeStatus(guint32 newStatus);
+      bool sendMessage(guint32 flags, Glib::ustring to, Glib::ustring message, Glib::ustring rtf, guint32 *messageId);
+      bool sendMessageRecv(Glib::ustring from, guint32 messageId);
 
     private:
-      // methods
-      gint sendRawData(const char* data, guint length);
-      gint recvRawData(char* data, guint length);
-      bool sendHello();
-      void startPing();
-      void stopPing();
-      void startListen();
-      void stopListen();
-      bool setDestinationAddress();
-      bool sendHeader(guint32 packetType, guint32 dataLength);
-      bool recvHeader(mrim_packet_header_t* buffer);
-      bool sendLPS(Glib::ustring s);
-      bool sendUL(guint32 x);
-      static void pingCallback(MrimClient *client);
-      bool listenCallback(Glib::IOCondition condition);
-      bool connectionHangupCallback(Glib::IOCondition condition);
-      guint32 readLPSFromSocket(Glib::ustring *buffer, Glib::ustring fromEncoding);
-      UserInfo receiveUserInfo(guint32 dataLength);
-      bool checkContactsReceived(guint32 *dataLength);
-      guint32 receiveGroupsNumber(guint32 *dataLength);
-      Glib::ustring receiveGroupMask(guint32 *dataLength);
-      Glib::ustring receiveContactsMask(guint32 *dataLength);
-      GroupList receiveGroupList(guint32 *dataLength);
-      ContactList receiveContactList(guint32 *dataLength);
-      void receiveChangedStatus();
-      guint32 receiveConnectionParameters();
-      guint32 receiveLogoutMessage();
-      guint32 receiveMessageStatus(guint32 seq);
-      void checkMessageListWithCallback();
-      void sendMessageRecv(Glib::ustring from, guint32 msgId);
-      void receiveMessage();
+      Glib::ustring userAgentString;
 
-      // members
-      bool connected, helloSent;
-      bool isPingingNow, isSendingNow;
-      gint sock;
-      guint32 pingPeriod, commandNumber, groupsNumber, userStatus;
-      Glib::ustring groupMask, contactsMask, userAgentString;
-      MessageList messageList;
-      sockaddr_in destinationAddress;
-      mrim_packet_header_t packetHeader;
-      GThread *pingThread;
-      sigc::connection listenConnection;
+    protected:
+      void onLogout(guint32 reason);
   };
 };
 

@@ -1,7 +1,7 @@
 /*
  *      HttpClient.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -30,10 +30,12 @@
 using namespace Swift;
 
 HttpClient::HttpClient() {
+  appInstance->logEvent("HttpClient::HttpClient()", SEVERITY_DEBUG);
   connected = false;
 }
 
 DetailedAddress HttpClient::parseAddress(std::string contactAddress) {
+  appInstance->logEvent("HttpClient::parseAddress()", SEVERITY_DEBUG);
   DetailedAddress result;
   gint p = contactAddress.find("@");
   if(p != std::string::npos) {
@@ -45,6 +47,7 @@ DetailedAddress HttpClient::parseAddress(std::string contactAddress) {
 }
 
 bool HttpClient::connect(Glib::ustring host) {
+  appInstance->logEvent("HttpClient::connect()", SEVERITY_DEBUG);
   if(!connected) {
     if(createTcpSocket()) {
       sockaddr_in addr;
@@ -59,9 +62,11 @@ bool HttpClient::connect(Glib::ustring host) {
 }
 
 bool HttpClient::checkAvatar(std::string contactAddress) {
+  return false;
+  appInstance->logEvent("HttpClient::checkAvatar()", SEVERITY_DEBUG);
   //return false;
-  if(!connected) {
-    connect(HOST);
+  if(!connected && !connect(HOST)) {
+    return false;
   }
   bool result = false;
   DetailedAddress addr;
@@ -80,14 +85,12 @@ bool HttpClient::checkAvatar(std::string contactAddress) {
   return result;
 }
 
-bool HttpClient::loadAvatar(std::string contactAddress, Gtk::Image* img, AvatarType atype) {
-  if(!connected) {
-    connect(HOST);
-    if(!connected) {
-      return false;
-    }
+Glib::RefPtr<Gdk::Pixbuf> HttpClient::loadAvatar(std::string contactAddress, AvatarType atype) {
+  appInstance->logEvent("HttpClient::loadAvatar()", SEVERITY_DEBUG);
+  Glib::RefPtr<Gdk::Pixbuf> result;
+  if(!connected && !connect(HOST)) {
+    return result;
   }
-  bool result = false;
   DetailedAddress addr;
   addr = parseAddress(contactAddress);
   Glib::ustring avatarStr = (atype == AVATAR_BIG ? "_mrimavatar" : "_mrimavatarsmall");
@@ -105,8 +108,7 @@ bool HttpClient::loadAvatar(std::string contactAddress, Gtk::Image* img, AvatarT
         GError* err = NULL;
         GdkPixbuf* imgPixBuf = gdk_pixbuf_new_from_stream(imgStream, NULL, &err);
         if(imgPixBuf != NULL) {
-          img->set(Glib::wrap(imgPixBuf));
-          result = true;
+          result = Glib::wrap(imgPixBuf);
         }
       }
     }
@@ -120,6 +122,7 @@ Glib::ustring HttpClient::getServerHost() {
 }
 
 bool HttpClient::createTcpSocket() {
+  appInstance->logEvent("HttpClient::createTcpSocket()", SEVERITY_DEBUG);
   if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
     return false;
   }
@@ -127,6 +130,7 @@ bool HttpClient::createTcpSocket() {
 }
 
 bool HttpClient::setDestinationAddress(sockaddr_in* address) {
+  appInstance->logEvent("HttpClient::setDestinationAddress()", SEVERITY_DEBUG);
   gint s = socket(AF_INET, SOCK_STREAM, 0);
   if(s == -1) {
     return false;
@@ -142,6 +146,7 @@ bool HttpClient::setDestinationAddress(sockaddr_in* address) {
 }
 
 gint HttpClient::recvAll(char* buf, guint len) {
+  appInstance->logEvent("HttpClient::recvAll()", SEVERITY_DEBUG);
   gint total = 0;
   gint n;
   while(total < len) {
@@ -156,6 +161,7 @@ gint HttpClient::recvAll(char* buf, guint len) {
 }
 
 void HttpClient::disconnect() {
+  appInstance->logEvent("HttpClient::disconnect()", SEVERITY_DEBUG);
   #ifdef G_OS_WIN32
   closesocket(sock);
   #else

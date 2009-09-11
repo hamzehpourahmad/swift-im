@@ -1,7 +1,7 @@
 /*
  *      MrimSignalServer.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -41,10 +41,22 @@ SignalMessageStatus MrimSignalServer::signal_message_status() {
   return mSignalMessageStatus;
 }
 
-SignalMessageSendTimeout MrimSignalServer::signal_message_send_timeout() {
-  return mSignalMessageSendTimeout;
-}
-
 SignalMessageReceive MrimSignalServer::signal_message_receive() {
   return mSignalMessageReceive;
+}
+
+SignalConnectionParams MrimSignalServer::signal_connection_params() {
+  return mSignalConnectionParams;
+}
+
+SignalHelloAck MrimSignalServer::signal_hello_ack() {
+  return mSignalHelloAck;
+}
+
+SignalLoginAck MrimSignalServer::signal_login_ack() {
+  return mSignalLoginAck;
+}
+
+SignalLoginRej MrimSignalServer::signal_login_rej() {
+  return mSignalLoginRej;
 }

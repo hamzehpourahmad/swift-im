@@ -1,5 +1,5 @@
 /*
- *      MessageTextView.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
+ *      MrimGroup.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
  *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
  *
@@ -17,23 +17,42 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "MessageTextView.h"
-#include "Application.h"
+#include "MrimGroup.h"
 
 using namespace Swift;
 
-MessageTextView::MessageTextView() {
-  set_accepts_tab(false);
-  signal_key_press_event().connect(sigc::mem_fun(*this, &MessageTextView::onKeyPressEvent), false);
+MrimGroup::MrimGroup() {
+  mFlags = 0;
+  mName = "";
+  mIndex = 0;
 }
 
-bool MessageTextView::onKeyPressEvent(GdkEventKey* event) {
-  if(event->type == GDK_KEY_PRESS) {
-    if((event->state & GDK_CONTROL_MASK) && event->keyval == GDK_Return) {
-      // send message
-      appInstance->chatWindow->sendButton->clicked();
-      get_buffer()->set_text("");
-    }
-  }
-  return false;
+MrimGroup::MrimGroup(guint32 flags, Glib::ustring name, guint32 index) {
+  mFlags = flags;
+  mName = name;
+  mIndex = index;
+}
+
+guint32 MrimGroup::getFlags() {
+  return mFlags;
+}
+
+guint32 MrimGroup::getIndex() {
+  return mIndex;
+}
+
+Glib::ustring MrimGroup::getName() {
+  return mName;
+}
+
+void MrimGroup::setFlags(guint32 flags) {
+  mFlags = flags;
+}
+
+void MrimGroup::setIndex(guint32 index) {
+  mIndex = index;
+}
+
+void MrimGroup::setName(Glib::ustring name) {
+  mName = name;
 }

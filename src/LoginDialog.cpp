@@ -1,7 +1,7 @@
 /*
  *      LoginDialog.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009  ÓÊ‡Â‚ √‡Î˚ÏÊ‡Ì <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 –ö–æ–∂–∞–µ–≤ –ì–∞–ª—ã–º–∂–∞–Ω <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -22,14 +22,16 @@
 
 using namespace Swift;
 
-LoginDialog::LoginDialog(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade) : Gtk::Dialog(baseObject) {
-  // init widgets
-  Application::getAppInstance()->xml->get_widget("loginButton", loginButton);
-  Application::getAppInstance()->xml->get_widget("cancelLoginButton", cancelButton);
-  Application::getAppInstance()->xml->get_widget("loginEntry", loginEntry);
-  Application::getAppInstance()->xml->get_widget("passwordEntry", passwordEntry);
 
-  // connecting signals
+LoginDialog::LoginDialog(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade) : Gtk::Dialog(baseObject) {
+  appInstance->logEvent("LoginDialog::LoginDialog()", SEVERITY_DEBUG);
+  // get widgets
+  appInstance->xml->get_widget("loginButton", loginButton);
+  appInstance->xml->get_widget("cancelLoginButton", cancelButton);
+  appInstance->xml->get_widget("loginEntry", loginEntry);
+  appInstance->xml->get_widget("passwordEntry", passwordEntry);
+
+  // connecting signal handlers
   loginButton->signal_clicked().connect(sigc::mem_fun(*this, &LoginDialog::loginButtonOnClicked));
   cancelButton->signal_clicked().connect(sigc::mem_fun(*this, &LoginDialog::cancelButtonOnClicked));
   loginEntry->signal_activate().connect(sigc::mem_fun(*this, &LoginDialog::loginButtonOnClicked));
@@ -41,30 +43,31 @@ void LoginDialog::cancelButtonOnClicked() {
 }
 
 void LoginDialog::loginButtonOnClicked() {
+  appInstance->logEvent("LoginDialog::loginButtonOnClicked()", SEVERITY_DEBUG);
   hide();
-  if(!Application::getAppInstance()->mClient.connect()) {
-    Application::getAppInstance()->showMessage("Connection error", "Cannot establish connection to server\n", "I can't connect to server. Are you really connected to the Internet?", Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
+  Glib::ustring login, password;
+  login = loginEntry->get_text();
+  password = passwordEntry->get_text();
+  if(login.empty() || password.empty()) {
+    return;
+  }
+  if(!appInstance->mConnection->connect()) {
+    appInstance->showMessage("Connection error", "Cannot establish connection to server\n", "I can't connect to server. Are you really connected to the Internet?", Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
   }
   else {
-    Glib::ustring login, password, result;
     guint32 startupStatus;
-    login = loginEntry->get_text();
-    password = passwordEntry->get_text();
-    startupStatus = Application::getAppInstance()->mainWindow->statusCombo->getStatusCode();
+    startupStatus = appInstance->mainWindow->statusCombo->getStatusCode();
     if(startupStatus == STATUS_OFFLINE) {
       startupStatus = STATUS_ONLINE;
     }
-    result = Application::getAppInstance()->mClient.login(login, password, startupStatus);
-    if(result != "ok") {
-      Application::getAppInstance()->showMessage("Login error", "Login unsuccessfull\n", "Reason: \n" + result, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
-    }
-    else {
-      Application::getAppInstance()->mrimLogged = true;
-    }
+    appInstance->mUser->setStatus(startupStatus);
+    appInstance->mUser->setAddress(login);
+    appInstance->mUser->authorize(password);
   }
 }
 
 void LoginDialog::resetEntries() {
+  appInstance->logEvent("LoginDialog::resetEntries()", SEVERITY_DEBUG);
   loginEntry->set_text("");
   passwordEntry->set_text("");
 }

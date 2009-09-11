@@ -6,7 +6,7 @@
 #define MRIM_PROTO_H
 
 #include <sys/types.h>
-#include <glib.h>
+#include <glib/gtypes.h>
 
 #define PROTO_VERSION_MAJOR     1
 #define PROTO_VERSION_MINOR     7
@@ -20,22 +20,22 @@
 typedef struct mrim_packet_header_t
 {
     guint32      magic;   // Magic
-    guint32      proto;   // Версия протокола
+    guint32      proto;   // Р’РµСЂСЃРёСЏ РїСЂРѕС‚РѕРєРѕР»Р°
     guint32      seq;   // Sequence
-    guint32      msg;   // Тип пакета
-    guint32      dlen;    // Длина данных
-    guint32 from;   // Адрес отправителя
-    guint32 fromport; // Порт отправителя
-    char  reserved[16]; // Зарезервировано
+    guint32      msg;   // РўРёРї РїР°РєРµС‚Р°
+    guint32      dlen;    // Р”Р»РёРЅР° РґР°РЅРЅС‹С…
+    guint32 from;   // РђРґСЂРµСЃ РѕС‚РїСЂР°РІРёС‚РµР»СЏ
+    guint32 fromport; // РџРѕСЂС‚ РѕС‚РїСЂР°РІРёС‚РµР»СЏ
+    char  reserved[16]; // Р—Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅРѕ
 }
 mrim_packet_header_t;
 
-#define CS_MAGIC    0xDEADBEEF    // Клиентский Magic ( C <-> S )
+#define CS_MAGIC    0xDEADBEEF    // РљР»РёРµРЅС‚СЃРєРёР№ Magic ( C <-> S )
 
 
 /***************************************************************************
 
-    ПРОТОКОЛ СВЯЗИ КЛИЕНТ-СЕРВЕР
+    РџР РћРўРћРљРћР› РЎР’РЇР—Р РљР›РР•РќРў-РЎР•Р Р’Р•Р 
 
  ***************************************************************************/
 
