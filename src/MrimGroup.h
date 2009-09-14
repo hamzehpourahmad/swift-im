@@ -20,27 +20,49 @@
 #ifndef MrimGroup_h
 #define MrimGroup_h
 
+#include <map>
+#include <vector>
+
 #include <glibmm/ustring.h>
+
+#include "MrimContact.h"
 
 namespace Swift {
   class MrimGroup;
 };
 
 namespace Swift {
+  /* "Not authorized" groups must be created manually.
+   * This const is used as index of such group.
+   * Contacts, which have CONTACT_INTFLAG_NOT_AUTHORIZED in their server flags
+   * are considered as unauthorized and should be added to this group
+   */
+
+  const guint32 GROUP_INDEX_NOT_AUTHORIZED = 1 << 15;
+
+  // guint32 are indexes of group, so we can access to group with index X by writing groupList[X]
+  typedef std::map<guint32, MrimGroup> GroupList;
+  typedef std::vector<MrimContact> ContactList;
   class MrimGroup {
     public:
       MrimGroup();
       MrimGroup(guint32 flags, Glib::ustring name, guint32 index);
       guint32 getFlags();
-      guint32 getIndex();
       Glib::ustring getName();
+      guint32 getIndex();
       void setFlags(guint32 flags);
-      void setIndex(guint32 index);
       void setName(Glib::ustring name);
+      void setIndex(guint32 index);
+      ContactList* contacts();
+      void addContact(MrimContact c);
+      void removeContact(guint32 contactIndex);
+      void debugPrint();
+
     private:
       guint32 mFlags;
       guint32 mIndex;
       Glib::ustring mName;
+      ContactList mCl;
   };
 };
 

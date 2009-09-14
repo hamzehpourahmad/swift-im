@@ -143,11 +143,10 @@ bool MrimConnection::connect() {
     Glib::signal_io().connect(sigc::mem_fun(*this, &MrimConnection::connectionHangupCallback), mSock, Glib::IO_HUP);
     MrimPacket p(MRIM_CS_HELLO);
     p.send();
-    /*
-    MrimPacket *hello = MrimPacket::receive();
-    delete hello;
-    */
-    MrimPacket::receive();
+    // receive MRIM_CS_HELLO_ACK
+    do {
+      p = MrimPacket::receive();
+    } while(p.getHeader().msg != MRIM_CS_HELLO_ACK);
     startListen();
   }
   return mConnected;
@@ -208,12 +207,6 @@ bool MrimConnection::listenCallback(Glib::IOCondition condition) {
   //appInstance->logEvent("MrimConnection::listenCallback()", SEVERITY_DEBUG);
   if((condition & Glib::IO_IN) || (condition & Glib::IO_PRI)) {
     // ready to read
-    //appInstance->logEvent("in MrimConnection::listenCallback() data to read", SEVERITY_DEBUG);
-    /*
-    MrimPacket *p = MrimPacket::receive();
-    printf("Header msg: %d\n", p->getHeader().msg);
-    delete p;
-    */
     MrimPacket::receive();
   }
   return true;

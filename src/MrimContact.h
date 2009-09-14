@@ -33,10 +33,10 @@ namespace Swift {
   class MrimContact {
     public:
       MrimContact();
-      MrimContact(guint32 index, guint32 flag, MrimGroup grp, Glib::ustring address, Glib::ustring nickname, guint32 serverFlags, guint32 status, Glib::RefPtr<Gdk::Pixbuf> avatar);
+      MrimContact(guint32 index, guint32 flag, guint32 grp, Glib::ustring address, Glib::ustring nickname, guint32 serverFlags, guint32 status, Glib::RefPtr<Gdk::Pixbuf> avatar);
       void setIndex(guint32 index);
       void setFlag(guint32 flag);
-      void setGroup(MrimGroup grp);
+      void setGroup(guint32 grp);
       void setAddress(Glib::ustring address);
       void setNickname(Glib::ustring nickname);
       void setServerFlags(guint32 flags);
@@ -44,16 +44,18 @@ namespace Swift {
       void setAvatar(Glib::RefPtr<Gdk::Pixbuf> avatar);
       guint32 getIndex();
       guint32 getFlag();
-      MrimGroup getGroup();
+      guint32  getGroup();
       Glib::ustring getAddress();
       Glib::ustring getNickname();
       guint32 getServerFlags();
       guint32 getStatus();
       Glib::RefPtr<Gdk::Pixbuf> getAvatar();
+      void debugPrint();
+
     private:
       guint32 mIndex;
       guint32 mFlag;
-      MrimGroup mGroup;
+      guint32 mGroup;
       Glib::ustring mAddress;
       Glib::ustring mNickname;
       guint32 mServerFlags;

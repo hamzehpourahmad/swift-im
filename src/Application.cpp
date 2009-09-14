@@ -27,6 +27,7 @@
 #include <glibmm/spawn.h>
 
 #include "Application.h"
+#include "Utils.h"
 #include "SocketHeaders.h"
 #include "Configure.h"
 
@@ -41,9 +42,14 @@ Application* Application::getInstance() {
   return applicationInstance;
 }
 
+std::string Application::getVersion() {
+  return SWIFTIM_VERSION;
+}
+
 Application::Application() {
   initVariables();
   applicationInstance = this;
+  Glib::set_application_name("Swift-IM");
   // open log file in 'append' mode.
   logfile = Glib::IOChannel::create_from_file(getVariable("SWIFTIM_LOGFILEPATH"), "a");
   logEvent("Swift-IM started", SEVERITY_NOTICE);
@@ -72,12 +78,7 @@ Application::Application() {
   xml->get_widget_derived("mainWindow", mainWindow);
   xml->get_widget_derived("loginDialog", loginDialog);
   xml->get_widget_derived("chatWindow", chatWindow);
-  xml->get_widget("aboutDialog", aboutDialog);
-  Gtk::Button* btn;
-  xml->get_widget("aboutCloseButton", btn);
-  btn->signal_clicked().connect(sigc::mem_fun(*this, &Application::onAboutCloseClicked));
-  xml->get_widget("aboutLinkButton", btn);
-  btn->signal_clicked().connect(sigc::mem_fun(*this, &Application::onLinkButtonClicked));
+  xml->get_widget_derived("aboutDialog", aboutDialog);
 }
 
 Application::~Application() {
@@ -109,18 +110,10 @@ void Application::showMessage(Glib::ustring title, Glib::ustring message, Glib::
   dialog.run();
 }
 
-void Application::onAboutCloseClicked() {
-  aboutDialog->hide();
-}
-
-void Application::onLinkButtonClicked() {
-  Utils::openUri(getVariable("SWIFTIM_HOMEPAGE"));
-}
-
 /*
  * Initializes application variables.
  * INSTALL_PREFIX is define at compile-time.
- * Perhaps in future variables will be loaded from INI-file.
+ * Perhaps in future, variables will be loaded from INI-file.
  */
 void Application::initVariables() {
   Glib::ustring prefix = INSTALL_PREFIX;
@@ -132,13 +125,13 @@ void Application::initVariables() {
   variables["SWIFTIM_DATA_DIR"] = variables["SWIFTIM_INSTALL_PREFIX"] + G_DIR_SEPARATOR + "share" + G_DIR_SEPARATOR + "swift-im";
   variables["SWIFTIM_USER_DATA_DIR"] = Glib::get_user_data_dir() + G_DIR_SEPARATOR + "swift-im";
   variables["SWIFTIM_HOMEPAGE"] = "http://code.google.com/p/swift-im/";
-  
+
   // create user data dir if it doesn't exist.
   Utils::createDir(variables["SWIFTIM_USER_DATA_DIR"]);
   variables["SWIFTIM_LOGFILEPATH"] = variables["SWIFTIM_USER_DATA_DIR"] + G_DIR_SEPARATOR + "swift-im.log";
   variables["AVATAR_WIDTH"] = "50";
   variables["AVATAR_HEIGHT"] = "50";
-  
+
   // this color is #ADD8E6FF in hex. last 'ff' is opacity level.
   variables["AVATAR_BGCOLOR"] = "2916673279";
 

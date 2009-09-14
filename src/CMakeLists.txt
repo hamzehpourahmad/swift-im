@@ -28,6 +28,7 @@ LINK_DIRECTORIES(${GTKMM_LIBRARY_DIRS} ${GTHREAD_LIBRARY_DIRS} ${LIBGLADEMM_LIBR
 
 #adding sources
 SET(PROJECT_SOURCES
+    AboutDialog.cpp
     Application.cpp
     ChatTabs.cpp
     ChatWindow.cpp
@@ -52,6 +53,7 @@ SET(PROJECT_SOURCES
     Utils.cpp
     )
 SET(PROJECT_HEADERS
+    AboutDialog.h
     Application.h
     ChatTabs.h
     ChatWindow.h
@@ -78,8 +80,10 @@ SET(PROJECT_HEADERS
     Utils.h
     )
 
-#set g++ flags
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+if(CMAKE_BUILD_TYPE STREQUAL "")
+  # use Release as default build type
+  SET(CMAKE_BUILD_TYPE "Release")
+endif(CMAKE_BUILD_TYPE STREQUAL "")
 
 #adding target executable
 ADD_EXECUTABLE(swift-im ${PROJECT_SOURCES} ${PROJECT_HEADERS})

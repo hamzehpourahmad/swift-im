@@ -62,6 +62,7 @@ void StatusComboWidget::onChanged() {
         /*
          * changing status
          */
+        appInstance->mUser->setStatus(row[columns.statusCode]);
         appInstance->mClient->changeStatus(row[columns.statusCode]);
       }
       else {

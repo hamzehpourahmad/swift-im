@@ -27,7 +27,6 @@ using namespace Swift;
 MrimClient::MrimClient() {
   appInstance->logEvent("MrimClient::MrimClient()", SEVERITY_DEBUG);
   userAgentString = "Swift-IM v0.2";
-  appInstance->sigServer->signal_logout().connect(sigc::mem_fun(*this, &MrimClient::onLogout));
 }
 
 bool MrimClient::sendMessage(guint32 flags, Glib::ustring to, Glib::ustring message, Glib::ustring rtf, guint32 *messageId) {
@@ -68,15 +67,6 @@ bool MrimClient::sendMessageRecv(Glib::ustring from, guint32 messageId) {
   p.addLPS(from);
   p.addUL(messageId);
   return p.send();
-}
-
-void MrimClient::onLogout(guint32 reason) {
-  appInstance->logEvent("MrimClient::onLogout()", SEVERITY_DEBUG);
-  Glib::ustring reasonStr = "";
-  if(reason == LOGOUT_NO_RELOGIN_FLAG) {
-    reasonStr = "Reason:\nYou are already logged in using another device";
-  }
-  appInstance->showMessage("Login error", "You're logged out.", reasonStr, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
 }
 
 bool MrimClient::changeStatus(guint32 newStatus) {

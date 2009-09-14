@@ -22,6 +22,7 @@
 
 #include "MrimUtils.h"
 #include "Application.h"
+#include "Utils.h"
 
 using namespace Swift;
 

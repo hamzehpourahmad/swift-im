@@ -47,26 +47,26 @@ namespace Swift {
 namespace Swift {
   const gulong CONTACT_FETCH_DELAY = 100000;
   const gulong GROUP_FETCH_DELAY = 100000;
-  class MrimPacket : public Glib::ObjectBase {
+  class MrimPacket {
     public:
       MrimPacket();
       MrimPacket(guint32 type);
       bool validate();
       bool send();
-      static Glib::RefPtr<MrimPacket> receive();
+      static MrimPacket receive();
       void setType(guint32 type);
       void addUL(guint32 ul);
       void addLPS(Glib::ustring lps);
       void addUIDL(UIDL uidl);
       mrim_packet_header_t getHeader();
-      
+
     private:
       guint32 getDlen();
       guint32 getLPSLength(Glib::ustring lps);
       void prepareHeader();
       void receiveData();
       void receiveUserInfo(UserInfo *ui);
-      void receiveContactList(GroupList *gl, ContactList *cl);
+      void receiveContactList(GroupList *gl);
       void receiveStatus(guint32 *status, Glib::ustring *address);
       void receiveConnectionParameters(guint32 *pingPeriod);
       void receiveLogoutMessage(guint32 *reason);
