@@ -32,8 +32,6 @@ namespace Swift {
 
 namespace Swift {
   typedef std::map<Glib::ustring, Glib::ustring> UserInfo;
-  typedef std::vector<MrimGroup> GroupList;
-  typedef std::vector<MrimContact> ContactList;
   class MrimLoggedUser : public MrimContact {
     public:
       MrimLoggedUser();
@@ -45,12 +43,10 @@ namespace Swift {
       MrimContact getContact(Glib::ustring address);
       MrimContact getContact(guint32 index);
       GroupList* getGroupList();
-      ContactList* getContactList();
 
     private:
       UserInfo mInfo;
       bool mLogged;
-      ContactList mContactList;
       GroupList mGroupList;
 
     protected:
@@ -59,8 +55,9 @@ namespace Swift {
       // mrim signals
       void onLoginAck();
       void onLoginRej(Glib::ustring reason);
+      void onLogout(guint32 logoutCode);
       void onStatusChange(guint32 status, Glib::ustring address);
-      void onContactListReceive(GroupList gl, ContactList cl);
+      void onContactListReceive(GroupList gl);
       void onUserInfoReceive(UserInfo ui);
   };
 };

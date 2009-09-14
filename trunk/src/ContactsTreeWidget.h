@@ -39,7 +39,6 @@ namespace Swift {
 #include "ContactsTreeColumns.h"
 
 namespace Swift {
-  const guint32 GROUP_INDEX_NOT_AUTHORIZED = 1 << 15;
   class ContactsTreeWidget : public Gtk::TreeView {
     public:
       ContactsTreeWidget(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade);
@@ -52,7 +51,7 @@ namespace Swift {
       void updateStatus(MrimContact contact);
       static void loadContactList();
       ContactsTreeColumns columns;
-      
+
     private:
       bool onSearchEqual(const Glib::RefPtr<Gtk::TreeModel>& model, gint column, const Glib::ustring& key, const Gtk::TreeModel::iterator& iter);
       Glib::RefPtr<Gdk::Pixbuf> resizeAvatar(Glib::RefPtr<Gdk::Pixbuf> src);
@@ -66,7 +65,7 @@ namespace Swift {
       // signal handlers
       // GUI signals
       void contactsTreeOnActivate(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn *column);
-      
+
       // mrim signals
       void onStatusChange(guint32 status, Glib::ustring address);
   };

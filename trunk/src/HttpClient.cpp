@@ -62,7 +62,6 @@ bool HttpClient::connect(Glib::ustring host) {
 }
 
 bool HttpClient::checkAvatar(std::string contactAddress) {
-  return false;
   appInstance->logEvent("HttpClient::checkAvatar()", SEVERITY_DEBUG);
   //return false;
   if(!connected && !connect(HOST)) {

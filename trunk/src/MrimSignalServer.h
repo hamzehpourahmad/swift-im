@@ -33,13 +33,12 @@ namespace Swift {
   /* SignalContactListReceive emitted when MRIM_CS_CONTACT_LIST2 received.
    * Contacts tree should be updated.
    * Parameters:
-   *  - GroupList gl - received group list.
-   *  - ContactList cl - received contact list.
+   *  - GroupList gl - received group list. (Each group already have associated contacts)
    * Handlers:
    *  - MrimLoggedUser::onContactListReceive()
    */
-  typedef sigc::signal<void, GroupList, ContactList> SignalContactListReceive;
-  
+  typedef sigc::signal<void, GroupList> SignalContactListReceive;
+
   /* SignalUserInfoReceive emitted when MRIM_CS_USER_INFO received.
    * User info (nickname, unread letter and etc) should be presented to user
    * Parameters:
@@ -49,7 +48,7 @@ namespace Swift {
    *  - MainWindow::onUserInfoReceive()
    */
   typedef sigc::signal<void, UserInfo> SignalUserInfoReceive;
-  
+
   /* SignalUserStatus emitted when MRIM_CS_USER_STATUS received.
    * Contacts tree should be updated (change appropriate contact's status).
    * Parameters:
@@ -61,17 +60,17 @@ namespace Swift {
    *  - ContactsTreeWidget::onStatusChange()
    */
   typedef sigc::signal<void, guint32, Glib::ustring> SignalUserStatus;
-  
+
   /* SignalLogout emitted when MRIM_CS_LOGOUT received.
    * Connections should be closed.
    * Parameters:
    *  guint32 reason
    * Handlers:
-   *  - MrimClient::onLogout()
+   *  - MrimLoggedUser::onLogout()
    *  - MrimConnection::onLogout()
    */
   typedef sigc::signal<void, guint32> SignalLogout;
-  
+
   /* SignalMessageStatus emitted when MRIM_CS_MESSAGE_STATUS received.
    * User should be noticed about message delivery status.
    * Parameters:
@@ -81,9 +80,9 @@ namespace Swift {
    *  - ChatWindow::onMessageStatus()
    */
   typedef sigc::signal<void, guint32, guint32> SignalMessageStatus;
-  
+
   /* SignalMessageReceive emitted when MRIM_CS_MESSAGE_ACK received.
-   * Handlers should present new message to user or do other operations depending on flags. 
+   * Handlers should present new message to user or do other operations depending on flags.
    * Also, MRIM_CS_MESSAGE_RECV should be sent, if flags don't contain MESSAGE_FLAG_NORECV.
    * Parameters:
    *  guint32 messagdId - Id of received message
@@ -95,7 +94,7 @@ namespace Swift {
    *  - ChatWindow::onMessageReceive()
    */
   typedef sigc::signal<void, guint32, guint32, Glib::ustring, Glib::ustring, Glib::ustring> SignalMessageReceive;
-  
+
   /* SignalConnectionParams emitted when MRIM_CS_CONNECTION_PARAMS received.
    * Ping period should be updated.
    * Parameters:
@@ -104,7 +103,7 @@ namespace Swift {
    *  - MrimConnection::onConnectionParamsReceive()
    */
   typedef sigc::signal<void, guint32> SignalConnectionParams;
-  
+
   /* SignalHelloAck emitted when MRIM_CS_HELLO_ACK received.
    * Ping period should be updated.
    * Parameters:
@@ -113,7 +112,7 @@ namespace Swift {
    *  - MrimConnection::onHelloAck()
    */
   typedef sigc::signal<void, guint32> SignalHelloAck;
-  
+
   /* SignalLoginAck emitted when MRIM_CS_LOGIN_ACK received.
    * Login succesfull.
    * Parameters:
@@ -122,7 +121,7 @@ namespace Swift {
    *  - MrimLoggedUser::onLoginAck()
    */
   typedef sigc::signal<void> SignalLoginAck;
-  
+
   /* SignalLoginRej emitted when MRIM_CS_LOGIN_REJ received.
    * Login unsuccesfull.
    * Parameters:
@@ -131,7 +130,7 @@ namespace Swift {
    *  - MrimLoggedUser::onLoginRej()
    */
   typedef sigc::signal<void, Glib::ustring> SignalLoginRej;
-  
+
   class MrimSignalServer {
     public:
       MrimSignalServer(){};

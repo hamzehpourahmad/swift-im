@@ -46,7 +46,7 @@ void ChatWindow::sendButtonOnClicked() {
   Tabs::iterator curTab = chatTabs->getCurrentTab();
   Glib::ustring address = curTab->address;
   Glib::ustring message = curTab->messageText->get_buffer()->get_text();
-  if(!address.empty() && !message.empty()) {  
+  if(!address.empty() && !message.empty()) {
     guint32 messageId;
     appInstance->mClient->sendMessage(0, address, message, " ", &messageId);
     // save message in message queue

@@ -56,3 +56,30 @@ void MrimGroup::setIndex(guint32 index) {
 void MrimGroup::setName(Glib::ustring name) {
   mName = name;
 }
+
+void MrimGroup::addContact(MrimContact c) {
+  mCl.push_back(c);
+}
+
+ContactList* MrimGroup::contacts() {
+  return &mCl;
+}
+
+void MrimGroup::removeContact(guint32 contactIndex) {
+  for(ContactList::iterator it = mCl.begin(); it != mCl.end(); it++) {
+    if(it->getIndex() == contactIndex) {
+      mCl.erase(it);
+      break;
+    }
+  }
+}
+
+void MrimGroup::debugPrint() {
+  printf("Index: %d\n", mIndex);
+  printf("Flags: %d\n", mFlags);
+  printf("Name : %s\n", mName.c_str());
+  printf("Contacts number: %d\n", mCl.size());
+  for(int i = 0; i < mCl.size(); i++) {
+    mCl[i].debugPrint();
+  }
+}

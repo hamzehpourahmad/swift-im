@@ -33,6 +33,8 @@ bool MessageTextView::onKeyPressEvent(GdkEventKey* event) {
       // send message
       appInstance->chatWindow->sendButton->clicked();
       get_buffer()->set_text("");
+      // stop executing of other handlers
+      return true;
     }
   }
   return false;

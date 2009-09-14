@@ -19,11 +19,13 @@
 
 #include <iostream>
 
+#include <glibmm/markup.h>
 #include <gtkmm/image.h>
 
 #include "ContactsTreeWidget.h"
 #include "MrimUtils.h"
 #include "MrimLoggedUser.h"
+#include "Utils.h"
 
 using namespace Swift;
 
@@ -41,19 +43,21 @@ ContactsTreeWidget::ContactsTreeWidget(BaseObjectType* baseObject, const Glib::R
   Gtk::TreeViewColumn* pColumn;
   Gtk::CellRenderer* renderer;
   Gtk::CellRendererPixbuf *avatarRenderer, *statusRenderer;
+  Gtk::CellRendererText *textRenderer;
 
   statusRenderer = Gtk::manage(new Gtk::CellRendererPixbuf);
   statusRenderer->property_xalign() = 0.0;
   colCount = append_column("Status", *statusRenderer);
   pColumn = get_column(colCount - 1);
-  pColumn->set_resizable(true);
+  //pColumn->set_resizable(true);
   pColumn->add_attribute(statusRenderer->property_pixbuf(), columns.statusImage);
 
-  colCount = append_column("Nickname", columns.contactNickname);
+  textRenderer = Gtk::manage(new Gtk::CellRendererText);
+  textRenderer->property_xalign() = 0.0;
+  colCount = append_column("Nickname", *textRenderer);
   pColumn = get_column(colCount - 1);
   pColumn->set_resizable(true);
-  renderer = pColumn->get_first_cell_renderer();
-  renderer->property_xalign() = 0.0;
+  pColumn->add_attribute(textRenderer->property_markup(), columns.contactNickname);
 
   avatarRenderer = Gtk::manage(new Gtk::CellRendererPixbuf);
   avatarRenderer->property_xalign() = 1.0;
@@ -94,7 +98,7 @@ void ContactsTreeWidget::addGroup(MrimGroup group) {
   row[columns.contactIndex] = group.getIndex();
   row[columns.contactAddress] = "";
   row[columns.contactStatus] = 0;
-  row[columns.contactNickname] = group.getName();
+  row[columns.contactNickname] = "<b>" + Glib::Markup::escape_text(group.getName()) + "</b>";
   addedGroups[group.getIndex()] = row;
   addedGroupsFlag[group.getIndex()] = true;
 }
@@ -102,19 +106,19 @@ void ContactsTreeWidget::addGroup(MrimGroup group) {
 void ContactsTreeWidget::addContact(MrimContact contact) {
   appInstance->logEvent("ContactsTreeWidget::addContact()", SEVERITY_DEBUG);
   Gtk::TreeModel::Row row;
-  if (!addedGroupsFlag[contact.getGroup().getIndex()]) {
+  if (!addedGroupsFlag[contact.getGroup()]) {
     // if contact isn't in any group
     row = *(treeModel->append());
   } else {
     if (contact.getStatus() != STATUS_OFFLINE && contact.getStatus() != STATUS_UNDETERMINATED) {
-      row = *(treeModel->prepend(addedGroups[contact.getGroup().getIndex()]->children()));
+      row = *(treeModel->prepend(addedGroups[contact.getGroup()]->children()));
     } else {
-      row = *(treeModel->append(addedGroups[contact.getGroup().getIndex()]->children()));
+      row = *(treeModel->append(addedGroups[contact.getGroup()]->children()));
     }
   }
   row[columns.contactIndex] = contact.getIndex();
   row[columns.contactAddress] = contact.getAddress();
-  row[columns.contactNickname] = contact.getNickname();
+  row[columns.contactNickname] = Glib::Markup::escape_text(contact.getNickname());
   row[columns.contactStatus] = contact.getStatus();
   row[columns.statusImage] = appInstance->getStatusImage(contact.getStatus());
   addedContacts[contact.getIndex()] = row;
@@ -148,25 +152,22 @@ void ContactsTreeWidget::updateStatus(MrimContact contact) {
 void ContactsTreeWidget::loadContactList() {
   appInstance->logEvent("ContactsTreeWidget::loadContactList()", SEVERITY_DEBUG);
   GroupList *gl = appInstance->mUser->getGroupList();
-  ContactList *cl = appInstance->mUser->getContactList();
+  ContactList *cl;
   ContactList::iterator clIt;
   GroupList::iterator glIt;
   appInstance->mainWindow->contactsTree->treeModel->clear();
   for (glIt = gl->begin(); glIt != gl->end(); glIt++) {
-    appInstance->mainWindow->contactsTree->addGroup(*glIt);
-  }
-  for (clIt = cl->begin(); clIt != cl->end(); clIt++) {
-    if (clIt->getServerFlags() == CONTACT_INTFLAG_NOT_AUTHORIZED) {
-      MrimGroup g;
-      g.setIndex(GROUP_INDEX_NOT_AUTHORIZED);
-      g.setFlags(0);
-      g.setName("Waiting for authorization");
-      if (!appInstance->mainWindow->contactsTree->addedGroupsFlag[GROUP_INDEX_NOT_AUTHORIZED]) {
-        appInstance->mainWindow->contactsTree->addGroup(g);
-      }
-      clIt->setGroup(g);
+    cl = glIt->second.contacts();
+    // prevent adding empty "Unauthorized" group
+    if(glIt->first != GROUP_INDEX_NOT_AUTHORIZED || !cl->empty()) {
+      appInstance->mainWindow->contactsTree->addGroup(glIt->second);
     }
-    appInstance->mainWindow->contactsTree->addContact(*clIt);
+  }
+  for (glIt = gl->begin(); glIt != gl->end(); glIt++) {
+    cl = glIt->second.contacts();
+    for(clIt = cl->begin(); clIt != cl->end(); clIt++) {
+      appInstance->mainWindow->contactsTree->addContact(*clIt);
+    }
   }
   appInstance->mainWindow->contactsTree->loadAvatars();
 }
@@ -182,11 +183,10 @@ Glib::RefPtr<Gdk::Pixbuf> ContactsTreeWidget::resizeAvatar(Glib::RefPtr<Gdk::Pix
   double sx, sy;
   w = src->get_width();
   h = src->get_height();
-  if(w > h) {
+  if (w > h) {
     tw = WIDTH;
     th = (gint)(tw * h * 1.0 / w);
-  }
-  else {
+  } else {
     th = HEIGHT;
     tw = (gint)(th * w * 1.0 / h);
   }
@@ -200,12 +200,17 @@ Glib::RefPtr<Gdk::Pixbuf> ContactsTreeWidget::resizeAvatar(Glib::RefPtr<Gdk::Pix
 
 void ContactsTreeWidget::loadAvatars() {
   appInstance->logEvent("ContactsTreeWidget::loadAvatars()", SEVERITY_DEBUG);
-  ContactList *cl = appInstance->mUser->getContactList();
+  GroupList *gl = appInstance->mUser->getGroupList();
+  ContactList *cl;
   ContactList::iterator clIt;
-  for (clIt = cl->begin(); clIt != cl->end(); clIt++) {
-    if (addedContactsFlag[clIt->getIndex()]) {
-      clIt->setAvatar(MrimUtils::prepareAvatar(clIt->getAddress()));
-      addedContacts[clIt->getIndex()][columns.contactAvatar] = resizeAvatar(clIt->getAvatar());
+  GroupList::iterator glIt;
+  for(glIt = gl->begin(); glIt != gl->end(); glIt++) {
+    cl = glIt->second.contacts();
+    for(clIt = cl->begin(); clIt != cl->end(); clIt++) {
+      if (addedContactsFlag[clIt->getIndex()]) {
+        clIt->setAvatar(MrimUtils::prepareAvatar(clIt->getAddress()));
+        addedContacts[clIt->getIndex()][columns.contactAvatar] = resizeAvatar(clIt->getAvatar());
+      }
     }
   }
 }
@@ -213,7 +218,7 @@ void ContactsTreeWidget::loadAvatars() {
 ContactsTreeWidget::~ContactsTreeWidget() {
   /*
    * I think we should free contact list avatars images in MrimClient class's destructor
-   * because it is more "right" to place ContactList destructing code in that class
+   * because it is more "right" to place ContactList destructindg code in that class
    */
 }
 

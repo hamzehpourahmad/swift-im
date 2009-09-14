@@ -28,7 +28,7 @@ MrimContact::MrimContact() {
   mStatus = 0;
 }
 
-MrimContact::MrimContact(guint32 index, guint32 flag, MrimGroup grp, Glib::ustring address, Glib::ustring nickname, guint32 serverFlags, guint32 status, Glib::RefPtr<Gdk::Pixbuf> avatar) {
+MrimContact::MrimContact(guint32 index, guint32 flag, guint32 grp, Glib::ustring address, Glib::ustring nickname, guint32 serverFlags, guint32 status, Glib::RefPtr<Gdk::Pixbuf> avatar) {
   mIndex = index;
   mFlag = flag;
   mGroup = grp;
@@ -47,7 +47,7 @@ void MrimContact::setFlag(guint32 flag) {
   mFlag = flag;
 }
 
-void MrimContact::setGroup(MrimGroup grp) {
+void MrimContact::setGroup(guint32 grp) {
   mGroup = grp;
 }
 
@@ -79,7 +79,7 @@ guint32 MrimContact::getFlag() {
   return mFlag;
 }
 
-MrimGroup MrimContact::getGroup() {
+guint32 MrimContact::getGroup() {
   return mGroup;
 }
 
@@ -89,6 +89,12 @@ Glib::ustring MrimContact::getAddress() {
 
 Glib::ustring MrimContact::getNickname() {
   return mNickname;
+}
+
+void MrimContact::debugPrint() {
+  printf("\tContact address: %s\n", mAddress.c_str());
+  printf("\tContact index: %d\n", mIndex);
+  printf("\tContact group: %d\n", mGroup);
 }
 
 guint32 MrimContact::getServerFlags() {

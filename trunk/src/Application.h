@@ -25,7 +25,7 @@
  * Communication between other classes can be done using 'appInstance' macro.
  * Instance of this class has pointers to instances of other classes.
  */
- 
+
 namespace Swift {
   class Application;
 };
@@ -42,9 +42,9 @@ namespace Swift {
 #include "MainWindow.h"
 #include "LoginDialog.h"
 #include "ChatWindow.h"
+#include "AboutDialog.h"
 #include "MrimSignalServer.h"
 #include "HttpClient.h"
-#include "Utils.h"
 #include "MrimClient.h"
 #include "MrimConnection.h"
 #include "MrimLoggedUser.h"
@@ -62,6 +62,7 @@ namespace Swift {
     public:
       Application();
       virtual ~Application();
+      std::string getVersion();
       static void quit();
       void showMessage(const Glib::ustring title, const Glib::ustring message, const Glib::ustring secondary, Gtk::MessageType mType, Gtk::ButtonsType bType);
       void logEvent(Glib::ustring message, LogSeverity svty);
@@ -70,7 +71,7 @@ namespace Swift {
       MainWindow* mainWindow;
       LoginDialog* loginDialog;
       ChatWindow* chatWindow;
-      Gtk::Dialog* aboutDialog;
+      AboutDialog* aboutDialog;
       MrimClient* mClient;
       MrimConnection* mConnection;
       Glib::RefPtr<Gnome::Glade::Xml> xml;
@@ -86,12 +87,6 @@ namespace Swift {
       Glib::ustring getSeverityStr(LogSeverity svty);
       void initVariables();
       void loadResources();
-      
-    protected:
-      // signal handlers
-      // @TODO remove these signal handlers from this class
-      void onAboutCloseClicked();
-      void onLinkButtonClicked();
   };
 };
 

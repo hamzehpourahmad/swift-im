@@ -45,27 +45,29 @@ void MrimLoggedUser::setStatus(guint32 status) {
 }
 
 MrimContact MrimLoggedUser::getContact(guint32 index) {
-  ContactList::iterator it;
-  MrimContact result;
-  for(it = mContactList.begin(); it != mContactList.end(); it++) {
-    if(it->getIndex() == index) {
-      result = *(it);
-      break;
+  GroupList::iterator git;
+  ContactList::iterator cit;
+  for(git = mGroupList.begin(); git != mGroupList.end(); git++) {
+    ContactList* cl = git->second.contacts();
+    for(cit = cl->begin(); cit != cl->end(); cit++) {
+      return (*cit);
     }
   }
-  return result;
+  return *cit;
 }
 
 MrimContact MrimLoggedUser::getContact(Glib::ustring address) {
-  ContactList::iterator it;
-  MrimContact result;
-  for(it = mContactList.begin(); it != mContactList.end(); it++) {
-    if(it->getAddress() == address) {
-      result = *(it);
-      break;
+  GroupList::iterator git;
+  ContactList::iterator cit;
+  for(git = mGroupList.begin(); git != mGroupList.end(); git++) {
+    ContactList* cl = git->second.contacts();
+    for(cit = cl->begin(); cit != cl->end(); cit++) {
+      if(cit->getAddress() == address) {
+        return *cit;
+      }
     }
   }
-  return result;
+  return *cit;
 }
 
 Glib::ustring MrimLoggedUser::getInfoRec(std::string key) {
@@ -85,20 +87,22 @@ void MrimLoggedUser::onLoginRej(Glib::ustring reason) {
 
 void MrimLoggedUser::onStatusChange(guint32 status, Glib::ustring address) {
   appInstance->logEvent("MrimLoggedUser::onStatusChange()", SEVERITY_DEBUG);
-  ContactList::iterator it;
-  MrimContact result;
-  for(it = mContactList.begin(); it != mContactList.end(); it++) {
-    if(it->getAddress() == address) {
-      it->setStatus(status);
-      break;
+  GroupList::iterator git;
+  ContactList::iterator cit;
+  for(git = mGroupList.begin(); git != mGroupList.end(); git++) {
+    ContactList* cl = git->second.contacts();
+    for(cit = cl->begin(); cit != cl->end(); cit++) {
+      if(cit->getAddress() == address) {
+        cit->setStatus(status);
+        break;
+      }
     }
   }
 }
 
-void MrimLoggedUser::onContactListReceive(GroupList gl, ContactList cl) {
+void MrimLoggedUser::onContactListReceive(GroupList gl) {
   appInstance->logEvent("MrimLoggedUser::onContactListReceive()", SEVERITY_DEBUG);
   mGroupList = gl;
-  mContactList = cl;
   Glib::Thread* t = Glib::Thread::create(sigc::ptr_fun(&ContactsTreeWidget::loadContactList), 0, false, true, Glib::THREAD_PRIORITY_LOW);
 }
 
@@ -112,10 +116,16 @@ GroupList* MrimLoggedUser::getGroupList() {
   return &mGroupList;
 }
 
-ContactList* MrimLoggedUser::getContactList() {
-  return &mContactList;
-}
-
 bool MrimLoggedUser::logged() {
   return mLogged;
+}
+
+void MrimLoggedUser::onLogout(guint32 logoutCode) {
+  appInstance->logEvent("MrimLoggedUser::onLogout()", SEVERITY_DEBUG);
+  mLogged = false;
+  Glib::ustring reasonStr = "";
+  if(logoutCode == LOGOUT_NO_RELOGIN_FLAG) {
+    reasonStr = "Reason:\nYou are already logged in using another device";
+  }
+  appInstance->showMessage("Login error", "You're logged out.", reasonStr, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
 }

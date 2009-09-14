@@ -48,7 +48,7 @@ void MainWindow::menuItemExitOnActivate() {
 }
 
 void MainWindow::menuItemAboutOnActivate() {
-  appInstance->aboutDialog->present();
+  appInstance->aboutDialog->run();
 }
 
 void MainWindow::onUserInfoReceive(UserInfo ui) {

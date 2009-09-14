@@ -39,9 +39,6 @@ namespace Swift {
 
     private:
       Glib::ustring userAgentString;
-
-    protected:
-      void onLogout(guint32 reason);
   };
 };
 

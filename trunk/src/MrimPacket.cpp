@@ -91,11 +91,11 @@ bool MrimPacket::send() {
   return result;
 }
 
-Glib::RefPtr<MrimPacket> MrimPacket::receive() {
+MrimPacket MrimPacket::receive() {
   //appInstance->logEvent("MrimPacket::receive()", SEVERITY_DEBUG);
-  Glib::RefPtr<MrimPacket> p(new MrimPacket());
-  if(p->connection->readHeader(&(p->header)) && p->validate()) {
-    p->receiveData();
+  MrimPacket p;
+  if(p.connection->readHeader(&(p.header)) && p.validate()) {
+    p.receiveData();
   }
   return p;
 }
@@ -160,7 +160,6 @@ void MrimPacket::receiveData() {
   guint32 pingPeriod, status, reason, msgid, flags;
   UserInfo t;
   GroupList gl;
-  ContactList cl;
   switch(header.msg) {
     case MRIM_CS_HELLO_ACK:
       appInstance->logEvent("New packet: MRIM_CS_HELLO_ACK", SEVERITY_DEBUG);
@@ -187,8 +186,8 @@ void MrimPacket::receiveData() {
 
     case MRIM_CS_CONTACT_LIST2:
       appInstance->logEvent("New packet: MRIM_CS_CONTACT_LIST2", SEVERITY_DEBUG);
-      receiveContactList(&gl, &cl);
-      appInstance->sigServer->signal_contact_list_receive().emit(gl, cl);
+      receiveContactList(&gl);
+      appInstance->sigServer->signal_contact_list_receive().emit(gl);
       break;
 
     case MRIM_CS_USER_STATUS:
@@ -242,7 +241,7 @@ void MrimPacket::receiveUserInfo(UserInfo *ui) {
   }
 }
 
-void MrimPacket::receiveContactList(GroupList *gl, ContactList *cl) {
+void MrimPacket::receiveContactList(GroupList *gl) {
   appInstance->logEvent("MrimPacket::receiveContactList()", SEVERITY_DEBUG);
   guint32 dataLength = header.dlen;
   Glib::ustring groupMask, contactsMask, lps;
@@ -252,6 +251,12 @@ void MrimPacket::receiveContactList(GroupList *gl, ContactList *cl) {
   guint32 status = connection->readUL();
   dataLength -= sizeof(guint32);
   if(status == GET_CONTACTS_OK) {
+    // add "Unauthorized" group first
+    group.setIndex(GROUP_INDEX_NOT_AUTHORIZED);
+    group.setName("Waiting for authorization");
+    group.setFlags(0);
+    (*gl)[GROUP_INDEX_NOT_AUTHORIZED] = group;
+
     // reading groups
     guint32 groupsNumber = connection->readUL();
     dataLength -= sizeof(guint32);
@@ -274,7 +279,7 @@ void MrimPacket::receiveContactList(GroupList *gl, ContactList *cl) {
         }
       }
       group.setIndex(i);
-      gl->push_back(group);
+      (*gl)[i] = group;
       g_usleep(GROUP_FETCH_DELAY);
     }
 
@@ -292,7 +297,7 @@ void MrimPacket::receiveContactList(GroupList *gl, ContactList *cl) {
               contact.setFlag(ul);
               break;
             case 1:
-              contact.setGroup((*gl)[ul]);
+              contact.setGroup(ul);
               break;
             case 2:
               contact.setServerFlags(ul);
@@ -321,7 +326,13 @@ void MrimPacket::receiveContactList(GroupList *gl, ContactList *cl) {
         }
       }
       contact.setIndex(cc++);
-      cl->push_back(contact);
+      if(contact.getServerFlags() == CONTACT_INTFLAG_NOT_AUTHORIZED) {
+        // if contact isn't authorized
+        (*gl)[GROUP_INDEX_NOT_AUTHORIZED].addContact(contact);
+      }
+      else {
+        (*gl)[contact.getGroup()].addContact(contact);
+      }
       g_usleep(CONTACT_FETCH_DELAY);
     }
   }
