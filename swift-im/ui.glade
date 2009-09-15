@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.3 on Tue Sep 15 09:40:12 2009 -->
+<!--Generated with glade3 3.4.3 on Tue Sep 15 12:04:26 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="mainWindow">
     <property name="visible">True</property>
@@ -39,7 +39,7 @@
             <child>
               <widget class="GtkMenuItem" id="menuitem4">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_About</property>
+                <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
                 <child>
                   <widget class="GtkMenu" id="menu3">
@@ -70,6 +70,7 @@
                 <property name="xalign">0</property>
                 <property name="xpad">5</property>
                 <property name="ypad">5</property>
+                <property name="stock">gtk-missing-image</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -189,29 +190,10 @@
             <property name="n_columns">2</property>
             <property name="row_spacing">5</property>
             <child>
-              <widget class="GtkEntry" id="passwordEntry">
+              <widget class="GtkLabel" id="loginLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="visibility">False</property>
-                <property name="invisible_char">●</property>
-                <signal name="activate" handler="loginButtonOnClicked"/>
+                <property name="label" translatable="yes">E-mail:</property>
               </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="passwordLabel">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Password</property>
-              </widget>
-              <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
             </child>
             <child>
               <widget class="GtkEntry" id="loginEntry">
@@ -226,10 +208,29 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="loginLabel">
+              <widget class="GtkLabel" id="passwordLabel">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">E-mail:</property>
+                <property name="label" translatable="yes">Password</property>
               </widget>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkEntry" id="passwordEntry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="visibility">False</property>
+                <property name="invisible_char">●</property>
+                <signal name="activate" handler="loginButtonOnClicked"/>
+              </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
             </child>
           </widget>
           <packing>
