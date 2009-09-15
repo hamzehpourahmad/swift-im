@@ -49,7 +49,6 @@ ContactsTreeWidget::ContactsTreeWidget(BaseObjectType* baseObject, const Glib::R
   statusRenderer->property_xalign() = 0.0;
   colCount = append_column("Status", *statusRenderer);
   pColumn = get_column(colCount - 1);
-  //pColumn->set_resizable(true);
   pColumn->add_attribute(statusRenderer->property_pixbuf(), columns.statusImage);
 
   textRenderer = Gtk::manage(new Gtk::CellRendererText);
@@ -91,30 +90,32 @@ bool ContactsTreeWidget::onSearchEqual(const Glib::RefPtr<Gtk::TreeModel>& model
   return true;
 }
 
-void ContactsTreeWidget::addGroup(MrimGroup group) {
+void ContactsTreeWidget::addGroup(guint32 index, MrimGroup group) {
   appInstance->logEvent("ContactsTreeWidget::addGroup()", SEVERITY_DEBUG);
   Gtk::TreeModel::Row row;
   row = *(treeModel->append());
-  row[columns.contactIndex] = group.getIndex();
+  row[columns.contactIndex] = index;
   row[columns.contactAddress] = "";
   row[columns.contactStatus] = 0;
-  row[columns.contactNickname] = "<b>" + Glib::Markup::escape_text(group.getName()) + "</b>";
-  addedGroups[group.getIndex()] = row;
-  addedGroupsFlag[group.getIndex()] = true;
+  // make group titles bolder and output online contacts number
+  gint numContacts = group.contacts()->size();
+  gint numOnline = group.onlineCount();
+  Glib::ustring color = "#4e9606";
+  if(!numOnline) {
+    color = "#cc0000";
+  }
+  row[columns.contactNickname] = "<b>" + Glib::Markup::escape_text(group.getName()) + Glib::ustring::compose(" (<span color='%1'>%2</span>/%3)", color, numOnline, numContacts) + "</b>";
+  addedGroups[index] = row;
 }
 
 void ContactsTreeWidget::addContact(MrimContact contact) {
   appInstance->logEvent("ContactsTreeWidget::addContact()", SEVERITY_DEBUG);
   Gtk::TreeModel::Row row;
-  if (!addedGroupsFlag[contact.getGroup()]) {
+  if (!addedGroups[contact.getGroup()]) {
     // if contact isn't in any group
     row = *(treeModel->append());
   } else {
-    if (contact.getStatus() != STATUS_OFFLINE && contact.getStatus() != STATUS_UNDETERMINATED) {
-      row = *(treeModel->prepend(addedGroups[contact.getGroup()]->children()));
-    } else {
-      row = *(treeModel->append(addedGroups[contact.getGroup()]->children()));
-    }
+    row = *(treeModel->append(addedGroups[contact.getGroup()]->children()));
   }
   row[columns.contactIndex] = contact.getIndex();
   row[columns.contactAddress] = contact.getAddress();
@@ -122,29 +123,25 @@ void ContactsTreeWidget::addContact(MrimContact contact) {
   row[columns.contactStatus] = contact.getStatus();
   row[columns.statusImage] = appInstance->getStatusImage(contact.getStatus());
   addedContacts[contact.getIndex()] = row;
-  addedContactsFlag[contact.getIndex()] = true;
 }
 
-void ContactsTreeWidget::removeGroup(MrimGroup group) {
+void ContactsTreeWidget::removeGroup(guint32 index, MrimGroup group) {
   appInstance->logEvent("ContactsTreeWidget::removeGroup()", SEVERITY_DEBUG);
-  if (addedGroupsFlag[group.getIndex()]) {
-    treeModel->erase(addedGroups[group.getIndex()]);
-    addedGroupsFlag[group.getIndex()] = false;
+  if (addedGroups[index]) {
+    treeModel->erase(addedGroups[index]);
   }
 }
 
 void ContactsTreeWidget::removeContact(MrimContact contact) {
   appInstance->logEvent("ContactsTreeWidget::removeContact()", SEVERITY_DEBUG);
-  if (addedContactsFlag[contact.getIndex()]) {
+  if (addedContacts[contact.getIndex()]) {
     treeModel->erase(addedContacts[contact.getIndex()]);
-    addedContactsFlag[contact.getIndex()] = false;
   }
 }
 
 void ContactsTreeWidget::updateStatus(MrimContact contact) {
   appInstance->logEvent("ContactsTreeWidget::updateStatus()", SEVERITY_DEBUG);
-  if (addedContactsFlag[contact.getIndex()]) {
-    Gtk::TreeModel::Row row;
+  if (addedContacts[contact.getIndex()]) {
     addedContacts[contact.getIndex()][columns.statusImage] = appInstance->getStatusImage(contact.getStatus());
   }
 }
@@ -160,7 +157,7 @@ void ContactsTreeWidget::loadContactList() {
     cl = glIt->second.contacts();
     // prevent adding empty "Unauthorized" group
     if(glIt->first != GROUP_INDEX_NOT_AUTHORIZED || !cl->empty()) {
-      appInstance->mainWindow->contactsTree->addGroup(glIt->second);
+      appInstance->mainWindow->contactsTree->addGroup(glIt->first, glIt->second);
     }
   }
   for (glIt = gl->begin(); glIt != gl->end(); glIt++) {
@@ -207,7 +204,7 @@ void ContactsTreeWidget::loadAvatars() {
   for(glIt = gl->begin(); glIt != gl->end(); glIt++) {
     cl = glIt->second.contacts();
     for(clIt = cl->begin(); clIt != cl->end(); clIt++) {
-      if (addedContactsFlag[clIt->getIndex()]) {
+      if (addedContacts[clIt->getIndex()]) {
         clIt->setAvatar(MrimUtils::prepareAvatar(clIt->getAddress()));
         addedContacts[clIt->getIndex()][columns.contactAvatar] = resizeAvatar(clIt->getAvatar());
       }
@@ -228,6 +225,7 @@ void ContactsTreeWidget::contactsTreeOnActivate(const Gtk::TreeModel::Path& path
   Gtk::TreeModel::iterator iter = treeModel->get_iter(path);
   if (iter) {
     Gtk::TreeModel::Row row = *iter;
+    // prevent from 'chatting' with groups :)
     if (row[columns.contactIndex] >= 20 && row[columns.contactIndex] != GROUP_INDEX_NOT_AUTHORIZED) {
       appInstance->chatWindow->show();
       appInstance->chatWindow->chatTabs->showTab(row[columns.contactAddress]);
