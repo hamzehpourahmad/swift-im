@@ -33,11 +33,10 @@ namespace Swift {
 
 namespace Swift {
   /* "Not authorized" groups must be created manually.
-   * This const is used as index of such group.
+   * This const defines index of such group.
    * Contacts, which have CONTACT_INTFLAG_NOT_AUTHORIZED in their server flags
    * are considered as unauthorized and should be added to this group
    */
-
   const guint32 GROUP_INDEX_NOT_AUTHORIZED = 1 << 15;
 
   // guint32 are indexes of group, so we can access to group with index X by writing groupList[X]
@@ -46,21 +45,19 @@ namespace Swift {
   class MrimGroup {
     public:
       MrimGroup();
-      MrimGroup(guint32 flags, Glib::ustring name, guint32 index);
+      MrimGroup(guint32 flags, Glib::ustring name);
       guint32 getFlags();
       Glib::ustring getName();
-      guint32 getIndex();
       void setFlags(guint32 flags);
       void setName(Glib::ustring name);
-      void setIndex(guint32 index);
       ContactList* contacts();
+      gint onlineCount();
       void addContact(MrimContact c);
       void removeContact(guint32 contactIndex);
       void debugPrint();
 
     private:
       guint32 mFlags;
-      guint32 mIndex;
       Glib::ustring mName;
       ContactList mCl;
   };

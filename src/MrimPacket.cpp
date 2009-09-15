@@ -252,7 +252,6 @@ void MrimPacket::receiveContactList(GroupList *gl) {
   dataLength -= sizeof(guint32);
   if(status == GET_CONTACTS_OK) {
     // add "Unauthorized" group first
-    group.setIndex(GROUP_INDEX_NOT_AUTHORIZED);
     group.setName("Waiting for authorization");
     group.setFlags(0);
     (*gl)[GROUP_INDEX_NOT_AUTHORIZED] = group;
@@ -278,7 +277,6 @@ void MrimPacket::receiveContactList(GroupList *gl) {
 
         }
       }
-      group.setIndex(i);
       (*gl)[i] = group;
       g_usleep(GROUP_FETCH_DELAY);
     }

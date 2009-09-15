@@ -44,9 +44,9 @@ namespace Swift {
       ContactsTreeWidget(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade);
       ~ContactsTreeWidget();
       void addContact(MrimContact contact);
-      void addGroup(MrimGroup group);
+      void addGroup(guint32 index, MrimGroup group);
       void loadAvatars();
-      void removeGroup(MrimGroup group);
+      void removeGroup(guint32 index, MrimGroup group);
       void removeContact(MrimContact contact);
       void updateStatus(MrimContact contact);
       static void loadContactList();
@@ -56,9 +56,7 @@ namespace Swift {
       bool onSearchEqual(const Glib::RefPtr<Gtk::TreeModel>& model, gint column, const Glib::ustring& key, const Gtk::TreeModel::iterator& iter);
       Glib::RefPtr<Gdk::Pixbuf> resizeAvatar(Glib::RefPtr<Gdk::Pixbuf> src);
       std::map <guint32, Gtk::TreeModel::Row> addedGroups;
-      std::map <guint32, bool> addedGroupsFlag;
       std::map <guint32, Gtk::TreeModel::Row> addedContacts;
-      std::map <guint32, bool> addedContactsFlag;
 
     protected:
       Glib::RefPtr<Gtk::TreeStore> treeModel;

@@ -18,27 +18,22 @@
  */
 
 #include "MrimGroup.h"
+#include "Protocol.h"
 
 using namespace Swift;
 
 MrimGroup::MrimGroup() {
   mFlags = 0;
   mName = "";
-  mIndex = 0;
 }
 
-MrimGroup::MrimGroup(guint32 flags, Glib::ustring name, guint32 index) {
+MrimGroup::MrimGroup(guint32 flags, Glib::ustring name) {
   mFlags = flags;
   mName = name;
-  mIndex = index;
 }
 
 guint32 MrimGroup::getFlags() {
   return mFlags;
-}
-
-guint32 MrimGroup::getIndex() {
-  return mIndex;
 }
 
 Glib::ustring MrimGroup::getName() {
@@ -47,10 +42,6 @@ Glib::ustring MrimGroup::getName() {
 
 void MrimGroup::setFlags(guint32 flags) {
   mFlags = flags;
-}
-
-void MrimGroup::setIndex(guint32 index) {
-  mIndex = index;
 }
 
 void MrimGroup::setName(Glib::ustring name) {
@@ -75,11 +66,20 @@ void MrimGroup::removeContact(guint32 contactIndex) {
 }
 
 void MrimGroup::debugPrint() {
-  printf("Index: %d\n", mIndex);
   printf("Flags: %d\n", mFlags);
   printf("Name : %s\n", mName.c_str());
   printf("Contacts number: %d\n", mCl.size());
   for(int i = 0; i < mCl.size(); i++) {
     mCl[i].debugPrint();
   }
+}
+
+gint MrimGroup::onlineCount() {
+  gint result = 0;
+  for(ContactList::iterator it = mCl.begin(); it != mCl.end(); it++) {
+    if(it->getStatus() != STATUS_OFFLINE) {
+      ++result;
+    }
+  }
+  return result;
 }
