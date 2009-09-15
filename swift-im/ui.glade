@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.3 on Fri Sep 04 11:18:27 2009 -->
+<!--Generated with glade3 3.4.3 on Tue Sep 15 09:40:12 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="mainWindow">
     <property name="visible">True</property>
-    <property name="title" translatable="yes">Swift-IM</property>
+    <property name="title">Swift-IM</property>
     <property name="default_width">300</property>
     <property name="default_height">500</property>
     <child>
@@ -18,7 +18,7 @@
             <child>
               <widget class="GtkMenuItem" id="menuItemFile">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_Файл</property>
+                <property name="label" translatable="yes">_File</property>
                 <property name="use_underline">True</property>
                 <child>
                   <widget class="GtkMenu" id="menu1">
@@ -39,7 +39,7 @@
             <child>
               <widget class="GtkMenuItem" id="menuitem4">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_Справка</property>
+                <property name="label" translatable="yes">_About</property>
                 <property name="use_underline">True</property>
                 <child>
                   <widget class="GtkMenu" id="menu3">
@@ -189,10 +189,29 @@
             <property name="n_columns">2</property>
             <property name="row_spacing">5</property>
             <child>
-              <widget class="GtkLabel" id="loginLabel">
+              <widget class="GtkEntry" id="passwordEntry">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Логин:</property>
+                <property name="can_focus">True</property>
+                <property name="visibility">False</property>
+                <property name="invisible_char">●</property>
+                <signal name="activate" handler="loginButtonOnClicked"/>
               </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="passwordLabel">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Password</property>
+              </widget>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
             </child>
             <child>
               <widget class="GtkEntry" id="loginEntry">
@@ -207,29 +226,10 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="passwordLabel">
+              <widget class="GtkLabel" id="loginLabel">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Пароль</property>
+                <property name="label" translatable="yes">E-mail:</property>
               </widget>
-              <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkEntry" id="passwordEntry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="visibility">False</property>
-                <property name="invisible_char">●</property>
-                <signal name="activate" handler="loginButtonOnClicked"/>
-              </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
             </child>
           </widget>
           <packing>
@@ -340,8 +340,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-ok</property>
-                <property name="use_stock">True</property>
+                <property name="label" translatable="yes">Send</property>
                 <property name="yalign">0.51999998092651367</property>
                 <property name="response_id">0</property>
               </widget>
@@ -378,9 +377,8 @@
         <property name="spacing">2</property>
         <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
-          <widget class="GtkLabel" id="aboutTitleLabel">
+          <widget class="GtkLabel" id="title">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">&lt;span font='16' weight='bold'&gt;Swift-IM 0.1&lt;/span&gt;</property>
             <property name="use_markup">True</property>
             <property name="justify">GTK_JUSTIFY_CENTER</property>
           </widget>
@@ -390,15 +388,14 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkButton" id="aboutLinkButton">
+          <widget class="GtkButton" id="linkButton">
             <property name="visible">True</property>
             <property name="relief">GTK_RELIEF_NONE</property>
             <property name="focus_on_click">False</property>
             <property name="response_id">0</property>
             <child>
-              <widget class="GtkLabel" id="label4">
+              <widget class="GtkLabel" id="link">
                 <property name="visible">True</property>
-                <property name="label">&lt;span color="#0000FF" weight="bold"&gt;http://code.google.com/p/swift-im/&lt;/span&gt;</property>
                 <property name="use_markup">True</property>
               </widget>
             </child>
@@ -409,23 +406,18 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkNotebook" id="notebook1">
+          <widget class="GtkNotebook" id="notebook">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <widget class="GtkLabel" id="label3">
+              <widget class="GtkLabel" id="description">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">&lt;span weight="bold"&gt;Cross-platform IM client for Mail.ru&lt;/span&gt;
-
-Copyright (c) 2009 Кожаев Галымжан
-&amp;lt;kozhayev(at)gmail(dot)com&amp;gt;</property>
                 <property name="use_markup">True</property>
                 <property name="justify">GTK_JUSTIFY_CENTER</property>
-                <property name="selectable">True</property>
               </widget>
             </child>
             <child>
-              <widget class="GtkLabel" id="label1">
+              <widget class="GtkLabel" id="caption1">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Information</property>
               </widget>
@@ -1128,7 +1120,7 @@ Public License instead of this License.  But first, please read
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label2">
+              <widget class="GtkLabel" id="caption2">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">License</property>
               </widget>
@@ -1160,7 +1152,7 @@ Public License instead of this License.  But first, please read
               <placeholder/>
             </child>
             <child>
-              <widget class="GtkButton" id="aboutCloseButton">
+              <widget class="GtkButton" id="closeButton">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
