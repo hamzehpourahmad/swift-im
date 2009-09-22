@@ -19,6 +19,7 @@
 
 #include "MrimGroup.h"
 #include "Protocol.h"
+#include "Application.h"
 
 using namespace Swift;
 
@@ -66,9 +67,9 @@ void MrimGroup::removeContact(guint32 contactIndex) {
 }
 
 void MrimGroup::debugPrint() {
-  printf("Flags: %d\n", mFlags);
-  printf("Name : %s\n", mName.c_str());
-  printf("Contacts number: %d\n", mCl.size());
+  appInstance->logEvent(Glib::ustring::compose("Flags: %1", mFlags), SEVERITY_DEBUG);
+  appInstance->logEvent(Glib::ustring::compose("Name: %1", mName), SEVERITY_DEBUG);
+  appInstance->logEvent(Glib::ustring::compose("Contacts number: %1", mCl.size()), SEVERITY_DEBUG);
   for(int i = 0; i < mCl.size(); i++) {
     mCl[i].debugPrint();
   }

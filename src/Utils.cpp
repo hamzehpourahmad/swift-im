@@ -47,18 +47,3 @@ void Utils::openUri(std::string uri) {
 #endif
 }
 
-gint Utils::parseGint(std::string s) {
-  std::stringstream str;
-  gint result = 0;
-  str << s;
-  str >> result;
-  return result;
-}
-
-guint32 Utils::parseGuint32(std::string s) {
-  std::stringstream str;
-  guint32 result = 0;
-  str << s;
-  str >> result;
-  return result;
-}

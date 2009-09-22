@@ -81,7 +81,7 @@ void MrimLoggedUser::onLoginAck() {
 
 void MrimLoggedUser::onLoginRej(Glib::ustring reason) {
   appInstance->logEvent("MrimLoggedUser::onLoginRej()", SEVERITY_DEBUG);
-  appInstance->showMessage("Login error", "Login unsuccessfull\n", "Reason: \n" + reason, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
+  appInstance->showMessage(_("Login error"), _("Login unsuccessfull\n"), _("Reason: \n") + reason, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
   setStatus(STATUS_OFFLINE);
 }
 
@@ -125,7 +125,7 @@ void MrimLoggedUser::onLogout(guint32 logoutCode) {
   mLogged = false;
   Glib::ustring reasonStr = "";
   if(logoutCode == LOGOUT_NO_RELOGIN_FLAG) {
-    reasonStr = "Reason:\nYou are already logged in using another device";
+    reasonStr = _("Reason:\nYou are already logged in using another device");
   }
-  appInstance->showMessage("Login error", "You're logged out.", reasonStr, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
+  appInstance->showMessage(_("Login error"), _("You are logged out."), reasonStr, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
 }

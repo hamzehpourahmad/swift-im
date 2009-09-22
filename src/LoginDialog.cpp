@@ -30,6 +30,19 @@ LoginDialog::LoginDialog(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::G
   appInstance->xml->get_widget("cancelLoginButton", cancelButton);
   appInstance->xml->get_widget("loginEntry", loginEntry);
   appInstance->xml->get_widget("passwordEntry", passwordEntry);
+  appInstance->xml->get_widget("domainCombo", domainCombo);
+
+  // fill domain combobox
+  mdlCombo = Gtk::TreeStore::create(columns);
+  domainCombo->set_model(mdlCombo);
+  Gtk::TreeModel::Row row;
+  for(gint i = 0; i < 4; i++) {
+    row = *(mdlCombo->append());
+    row[columns.domainIndex] = i;
+    row[columns.domainTitle] = domains[i];
+  }
+  domainCombo->pack_start(columns.domainTitle, false);
+  domainCombo->set_active(0);
 
   // connecting signal handlers
   loginButton->signal_clicked().connect(sigc::mem_fun(*this, &LoginDialog::loginButtonOnClicked));
@@ -44,15 +57,17 @@ void LoginDialog::cancelButtonOnClicked() {
 
 void LoginDialog::loginButtonOnClicked() {
   appInstance->logEvent("LoginDialog::loginButtonOnClicked()", SEVERITY_DEBUG);
-  hide();
   Glib::ustring login, password;
-  login = loginEntry->get_text();
+  Gtk::TreeModel::iterator iter = domainCombo->get_active();
+  Gtk::TreeModel::Row row = *iter;
+  login = loginEntry->get_text() + domains[row[columns.domainIndex]];
   password = passwordEntry->get_text();
+  hide();
   if(login.empty() || password.empty()) {
     return;
   }
   if(!appInstance->mConnection->connect()) {
-    appInstance->showMessage("Connection error", "Cannot establish connection to server\n", "I can't connect to server. Are you really connected to the Internet?", Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
+    appInstance->showMessage(_("Connection error"), _("Cannot establish connection to server\n"), _("I can't connect to server. Are you really connected to the Internet?"), Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
   }
   else {
     guint32 startupStatus;

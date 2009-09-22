@@ -21,10 +21,10 @@
 #include "Application.h"
 #include "Utils.h"
 
+using namespace Glib;
 using namespace Swift;
 
-
-AboutDialog::AboutDialog(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade) : Gtk::Dialog(baseObject) {
+AboutDialog::AboutDialog(BaseObjectType* baseObject, const RefPtr<Gnome::Glade::Xml>& refGlade) : Gtk::Dialog(baseObject) {
   appInstance->logEvent("AboutDialog::AboutDialog()", SEVERITY_DEBUG);
   // get widgets
   appInstance->xml->get_widget("title", title);
@@ -38,7 +38,7 @@ AboutDialog::AboutDialog(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::G
 
   // setting properties
   title->set_use_markup(true);
-  title->set_label("<span font=\"16\" weight=\"bold\">" + Glib::get_application_name() + " " + appInstance->getVersion() + "</span>");
+  title->set_label("<span font=\"16\" weight=\"bold\">" + get_application_name() + " " + appInstance->getVersion() + "</span>");
   title->set_alignment(Gtk::ALIGN_CENTER);
   title->set_line_wrap(true);
   linkBtn->set_relief(Gtk::RELIEF_NONE);
@@ -50,12 +50,12 @@ AboutDialog::AboutDialog(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::G
   description->set_alignment(Gtk::ALIGN_CENTER);
   description->set_line_wrap(true);
   description->set_label(
-  "<span weight=\"bold\">Cross-platform IM client for Mail.ru</span>\n\n"
+  "<span weight=\"bold\">" + ustring(_("Cross-platform IM client for Mail.ru")) + "</span>\n\n"
   "Copyright (c) 2009 Кожаев Галымжан\n"
   "&lt;kozhayev(at)gmail(dot)com&gt;"
   );
-  caption1->set_label("Information");
-  caption2->set_label("License");
+  caption1->set_label(_("Information"));
+  caption2->set_label(_("License"));
 
   // connecting signals
   closeBtn->signal_clicked().connect(sigc::mem_fun(*this, &AboutDialog::onCloseClicked));

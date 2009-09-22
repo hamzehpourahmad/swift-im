@@ -43,10 +43,6 @@ namespace Swift {
   const guint HTTP_BUFFER_SIZE = 80000;
   const Glib::ustring HOST = "obraz.foto.mail.ru";
   const gint PORT = 80;
-  struct DetailedAddress {
-    std::string domain;
-    std::string user;
-  };
   class HttpClient {
     public:
       HttpClient();
@@ -54,7 +50,6 @@ namespace Swift {
       void disconnect();
       Glib::RefPtr<Gdk::Pixbuf> loadAvatar(std::string contactAddress, AvatarType atype);
       bool checkAvatar(std::string contactAddress);
-      DetailedAddress parseAddress(std::string contactAddress);
     private:
       bool connect(Glib::ustring host);
       gint recvAll(char* buf, guint len);

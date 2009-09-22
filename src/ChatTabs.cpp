@@ -30,74 +30,78 @@
 #include "ChatTabs.h"
 #include "MrimUtils.h"
 
+using namespace Glib;
 using namespace Swift;
 
 
-ChatTabs::ChatTabs(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade) : Gtk::Notebook(baseObject) {
+ChatTabs::ChatTabs(BaseObjectType* baseObject, const RefPtr<Gnome::Glade::Xml>& refGlade) : Gtk::Notebook(baseObject) {
   // connecting signals
   signal_switch_page().connect(sigc::mem_fun(*this, &ChatTabs::onSwitchTab));
 }
 
 void ChatTabs::onSwitchTab(GtkNotebookPage *page, gint pageNumber) {
-  Tabs::iterator it = getTab(pageNumber);
-  if(it != tabs.end()) {
-    MrimContact c = appInstance->mUser->getContact(it->address);
+  gint index = getTab(pageNumber);
+  if(index < tabs.size()) {
+    MrimContact c = appInstance->mUser->getContact(tabs[index].address);
     setUrgencyHint(c, false);
-    appInstance->chatWindow->set_title(it->tabCaption->get_text() + " - Swift-IM");
+    appInstance->chatWindow->set_title(tabs[index].tabCaption->get_text() + " - " + get_application_name());
     appInstance->chatWindow->set_urgency_hint(false);
   }
 }
 
 /*
- * Returns tab associated with address or tabs.end() if no such tab exists
+ * Returns tab index associated with address or tabs.size() if no such tab exists
  */
-Tabs::iterator ChatTabs::getTab(Glib::ustring address) {
-  Tabs::iterator it;
-  for(it = tabs.begin(); it != tabs.end(); it++) {
-    if(it->address == address) {
-      return it;
+gint ChatTabs::getTab(ustring address) {
+  gint sz = tabs.size();
+  for(gint i = 0; i < sz; i++) {
+    if(tabs[i].address == address) {
+      return i;
     }
   }
-  return tabs.end();
+  return sz;
 }
 
 /*
- * Returns tab that has specified pageNumber or tabs.end() if no such tab exists
+ * Returns tab index that has specified pageNumber or tabs.size() if no such tab exists
  */
-Tabs::iterator ChatTabs::getTab(gint pageNumber) {
+gint ChatTabs::getTab(gint pageNumber) {
+  gint sz = tabs.size();
   Gtk::Widget* child = get_nth_page(pageNumber);
   if(child) {
-    for(Tabs::iterator it = tabs.begin(); it != tabs.end(); it++) {
-      if(it->child == child) {
-        return it;
+    for(gint i = 0; i < sz; i++) {
+      if(tabs[i].child == child) {
+        return i;
       }
     }
   }
-  return tabs.end();
+  return sz;
 }
 
-/*
- * Returns current tab or tabs.end() if there isn't any tab
- */
-Tabs::iterator ChatTabs::getCurrentTab() {
-  return getTab(get_current_page());
+ChatTab ChatTabs::getCurrentTab() {
+  return tabs[getTab(get_current_page())];
+}
+
+ChatTab ChatTabs::getNthTab(gint tabIndex) {
+  return tabs[tabIndex];
 }
 
 /*
  * Closes all opened tabs.
  */
 void ChatTabs::closeAll() {
-  for(Tabs::iterator it = tabs.begin(); it != tabs.end(); it++) {
-    closeTab(it);
+  for(gint i  = 0; i < tabs.size(); i++) {
+    closeTab(i);
   }
 }
 
-void ChatTabs::createTab(Glib::ustring contactAddress) {
+gint ChatTabs::createTab(ustring contactAddress) {
+  appInstance->logEvent("ChatTabs::createTab()", SEVERITY_DEBUG);
   if(isCreated[contactAddress]) {
     /*
      * Tab already created
      */
-    return;
+    return page_num(*(tabs[getTab(contactAddress)].child));
   }
   /*
    * Here is the hierarchy of widgets displayed on each tab
@@ -142,12 +146,18 @@ void ChatTabs::createTab(Glib::ustring contactAddress) {
   Gtk::Image* avatar = manage(new Gtk::Image(c.getAvatar()));
   Gtk::ScrolledWindow* historyTextScroll = manage(new Gtk::ScrolledWindow());
   Gtk::ScrolledWindow* messageTextScroll = manage(new Gtk::ScrolledWindow());
+  
+  // if tab was created once we must obtain that tab index
+  // otherwise we will have two ChatTabs structures which will
+  // point to the same widgets, but child widget pointers will be different
+  gint newTabIndex = -1;
   if(widgetsCreated[contactAddress]) {
-    Tabs::iterator it = getTab(contactAddress);
-    historyTextView = it->historyText;
-    messageTextView = it->messageText;
-    contactInfoLabel = it->contactInfoLabel;
-    notifyLabel = it->notifyLabel;
+    // get old tab index
+    newTabIndex = getTab(contactAddress);
+    historyTextView = tabs[newTabIndex].historyText;
+    messageTextView = tabs[newTabIndex].messageText;
+    contactInfoLabel = tabs[newTabIndex].contactInfoLabel;
+    notifyLabel = tabs[newTabIndex].notifyLabel;
   }
   else {
     historyTextView = new HistoryTextView();
@@ -156,21 +166,9 @@ void ChatTabs::createTab(Glib::ustring contactAddress) {
     notifyLabel = new Gtk::Label();
     widgetsCreated[contactAddress] = true;
   }
-
+    
   /*
-   * 2. Store created widgets and page
-   */
-  newTab.historyText = historyTextView;
-  newTab.messageText = messageTextView;
-  newTab.notifyLabel = notifyLabel;
-  newTab.contactInfoLabel = contactInfoLabel;
-  newTab.child = tabContentBox;
-  newTab.tabCaption = tabCaption;
-  newTab.address = contactAddress;
-  tabs.push_back(newTab);
-
-  /*
-   * 3. Setting widget properties
+   * 2. Setting widget properties
    */
 
   /*
@@ -208,8 +206,8 @@ void ChatTabs::createTab(Glib::ustring contactAddress) {
   historyTextView->set_left_margin(DEFAULT_TEXTVIEW_MARGIN);
   messageTextView->set_right_margin(DEFAULT_TEXTVIEW_MARGIN);
   messageTextView->set_left_margin(DEFAULT_TEXTVIEW_MARGIN);
-
-  // 4. Packing widgets
+  
+  // 3. Packing widgets
 
   // packing tab label into hbox
   tabLabelBox->pack_start(*tabCaption);
@@ -234,76 +232,94 @@ void ChatTabs::createTab(Glib::ustring contactAddress) {
   tabContentBox->pack_start(*contactInfoBox, false, false, 0);
   tabContentBox->pack_start(*vPanel);
 
-  // 5. Connecting signals
-  /*
-   * closeButton's signal with extra argument
-   */
-  closeButton->signal_clicked().connect(sigc::bind<Tabs::iterator>(sigc::mem_fun(*this, &ChatTabs::onCloseTabClicked), tabs.end() - 1));
-  historyTextScroll->get_vadjustment()->signal_changed().connect(sigc::bind<Gtk::Adjustment*>(sigc::mem_fun(*this, &ChatTabs::onHistoryTextScrollChanged), historyTextScroll->get_vadjustment()));
-
-  // 6. Show all stuff
+  // 4. Show all stuff
   tabContentBox->show_all();
   tabLabelBox->show_all();
 
-  // 7. Append created tab and set it reorderable
-  append_page(*tabContentBox, *tabLabelBox);
+  // 5. Append created tab and set it reorderable
+  gint result = append_page(*tabContentBox, *tabLabelBox);
   set_tab_reorderable(*tabContentBox);
 
-  // set tab creation flag
+  // 6. Store created widgets and page, set creation flag
+  newTab.historyText = historyTextView;
+  newTab.messageText = messageTextView;
+  newTab.notifyLabel = notifyLabel;
+  newTab.contactInfoLabel = contactInfoLabel;
+  newTab.child = tabContentBox;
+  newTab.tabCaption = tabCaption;
+  newTab.address = contactAddress;
+  if(newTabIndex == -1) {
+    tabs.push_back(newTab);
+    newTabIndex = tabs.size() - 1;
+  }
+  else {
+    tabs[newTabIndex] = newTab;
+  }
   isCreated[contactAddress] = true;
+  
+  // 7. Connecting signals
+  // closeButton's signal with extra argument
+  closeButton->signal_clicked().connect(sigc::bind<gint>(sigc::mem_fun(*this, &ChatTabs::onCloseTabClicked), newTabIndex));
+  historyTextScroll->get_vadjustment()->signal_changed().connect(sigc::bind<Gtk::Adjustment*>(sigc::mem_fun(*this, &ChatTabs::onHistoryTextScrollChanged), historyTextScroll->get_vadjustment()));
+  
+  return result;
 }
 
-void ChatTabs::onCloseTabClicked(Tabs::iterator it) {
-  closeTab(it);
+void ChatTabs::onCloseTabClicked(gint tabIndex) {
+  closeTab(tabIndex);
   // close window if there aren't tabs
   if(!get_n_pages()) {
     appInstance->chatWindow->hide();
   }
 }
 
-void ChatTabs::closeTab(Tabs::iterator it) {
+void ChatTabs::closeTab(gint tabIndex) {
   /*
-  * Members of ChatTab struct won't be deleted. 
+  * Members of ChatTab struct won't be deleted.
   * We will use these created widgets if tab for contactAddress will be created again.
   */
-  if(isCreated[it->address]) {
-    isCreated[it->address] = false;
-    remove_page(page_num(*(it->child)));
+  if(isCreated[tabs[tabIndex].address]) {
+    isCreated[tabs[tabIndex].address] = false;
+    remove_page(page_num(*(tabs[tabIndex].child)));
     // don't delete child, because it's managed and gtkmm will take care of it
     // we must just nullify the pointer
-    it->child = NULL;
+    tabs[tabIndex].child = NULL;
   }
 }
 
 /*
  * Swicthes to tab associated with contactAddress
  */
-void ChatTabs::showTab(Glib::ustring contactAddress) {
+void ChatTabs::showTab(ustring contactAddress) {
+  gint pageNum;
   if(!isCreated[contactAddress]) {
     // create tab
-    createTab(contactAddress);
+    pageNum = createTab(contactAddress);
   }
-  // set as current
-  set_current_page(page_num(*(getTab(contactAddress)->child)));
+  else {
+    pageNum = page_num(*(tabs[getTab(contactAddress)].child));
+  }
+  set_current_page(pageNum);
 }
 
-void ChatTabs::notifyWriting(Glib::ustring contactAddress) {
+void ChatTabs::notifyWriting(ustring contactAddress) {
   if(isCreated[contactAddress]) {
     MrimContact c = appInstance->mUser->getContact(contactAddress);
-    Glib::ustring author = contactAddress;
+    ustring author = contactAddress;
     if(c.getIndex() != 0) {
       // if contact found
       author = c.getNickname();
     }
-    getTab(contactAddress)->notifyLabel->set_label("<small>" + author + " is typing a message</small>");
+    tabs[getTab(contactAddress)].notifyLabel->set_label("<small>" + ustring::compose(_("%1 is typing a message"), author) + "</small>");
     sigc::slot<bool> timeoutSlot = sigc::bind(sigc::mem_fun(*this, &ChatTabs::onNotifyWritingExpire), contactAddress);
-    Glib::signal_timeout().connect(timeoutSlot, NOTIFY_TIMEOUT_INTERVAL);
+    signal_timeout().connect(timeoutSlot, NOTIFY_TIMEOUT_INTERVAL);
   }
 }
 
-bool ChatTabs::onNotifyWritingExpire(Glib::ustring contactAddress) {
-  if(getTab(contactAddress)->notifyLabel != NULL) {
-    getTab(contactAddress)->notifyLabel->set_label("");
+bool ChatTabs::onNotifyWritingExpire(ustring contactAddress) {
+  gint ind = getTab(contactAddress);
+  if(tabs[ind].notifyLabel != NULL) {
+    tabs[ind].notifyLabel->set_label("");
   }
   return false;
 }
@@ -332,7 +348,7 @@ ChatTabs::~ChatTabs() {
 
 void ChatTabs::updateStatus(MrimContact contact) {
   if(isCreated[contact.getAddress()]) {
-    getTab(contact.getAddress())->contactInfoLabel->set_label(contact.getNickname() + " <" + contact.getAddress() + ">\n\n" + MrimUtils::getContactStatusByCode(contact.getStatus()));
+    tabs[getTab(contact.getAddress())].contactInfoLabel->set_label(contact.getNickname() + " <" + contact.getAddress() + ">\n\n" + MrimUtils::getContactStatusByCode(contact.getStatus()));
   }
 }
 
@@ -345,14 +361,14 @@ void ChatTabs::switchTab() {
  */
 void ChatTabs::setUrgencyHint(MrimContact contact, bool urgent) {
   if(isCreated[contact.getAddress()]) {
-    bool opened = getCurrentTab()->address == contact.getAddress();
+    bool opened = getCurrentTab().address == contact.getAddress();
     // set urgent only if tab isn't opened
     if(urgent && !opened) {
-      getTab(contact.getAddress())->tabCaption->set_label("<b>" + contact.getNickname() + "</b>");
+      tabs[getTab(contact.getAddress())].tabCaption->set_label("<b>" + contact.getNickname() + "</b>");
     }
     // 'deurgent' only if tab is opened
     else if(!urgent && opened) {
-      getTab(contact.getAddress())->tabCaption->set_label(contact.getNickname());
+      tabs[getTab(contact.getAddress())].tabCaption->set_label(contact.getNickname());
     }
   }
 }

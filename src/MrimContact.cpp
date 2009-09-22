@@ -18,6 +18,7 @@
  */
 
 #include "MrimContact.h"
+#include "Application.h"
 
 using namespace Swift;
 
@@ -92,9 +93,9 @@ Glib::ustring MrimContact::getNickname() {
 }
 
 void MrimContact::debugPrint() {
-  printf("\tContact address: %s\n", mAddress.c_str());
-  printf("\tContact index: %d\n", mIndex);
-  printf("\tContact group: %d\n", mGroup);
+  appInstance->logEvent(Glib::ustring::compose("\tContact address: %1", mAddress), SEVERITY_DEBUG);
+  appInstance->logEvent(Glib::ustring::compose("\tContact index: %1", mIndex), SEVERITY_DEBUG);
+  appInstance->logEvent(Glib::ustring::compose("\tContact group: %1", mGroup), SEVERITY_DEBUG);
 }
 
 guint32 MrimContact::getServerFlags() {

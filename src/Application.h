@@ -85,6 +85,7 @@ namespace Swift {
       std::map <guint32, Glib::RefPtr<Gdk::Pixbuf> > images;
       Glib::RefPtr<Glib::IOChannel> logfile;
       Glib::ustring getSeverityStr(LogSeverity svty);
+      void initLocale();
       void initVariables();
       void loadResources();
   };

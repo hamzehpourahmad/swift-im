@@ -26,24 +26,13 @@
 
 #include "HttpClient.h"
 #include "Application.h"
+#include "MrimUtils.h"
 
 using namespace Swift;
 
 HttpClient::HttpClient() {
   appInstance->logEvent("HttpClient::HttpClient()", SEVERITY_DEBUG);
   connected = false;
-}
-
-DetailedAddress HttpClient::parseAddress(std::string contactAddress) {
-  appInstance->logEvent("HttpClient::parseAddress()", SEVERITY_DEBUG);
-  DetailedAddress result;
-  gint p = contactAddress.find("@");
-  if(p != std::string::npos) {
-    result.user = contactAddress.substr(0, p);
-    gint point = contactAddress.rfind(".");
-    result.domain = contactAddress.substr(p+1, point - p - 1);
-  }
-  return result;
 }
 
 bool HttpClient::connect(Glib::ustring host) {
@@ -68,9 +57,9 @@ bool HttpClient::checkAvatar(std::string contactAddress) {
     return false;
   }
   bool result = false;
-  DetailedAddress addr;
-  addr = parseAddress(contactAddress);
-  Glib::ustring request = "HEAD /" + addr.domain + "/" + addr.user + "/_mrimavatar HTTP/1.1 \r\nHost: " + getServerHost() + "\r\n\r\n";
+  std::pair<std::string, std::string> addr;
+  addr = MrimUtils::splitAddress(contactAddress);
+  Glib::ustring request = "HEAD /" + addr.second + "/" + addr.first + "/_mrimavatar HTTP/1.1 \r\nHost: " + getServerHost() + "\r\n\r\n";
   send(sock, request.c_str(), request.length(), 0);
   char *data = (char*) g_malloc0(HTTP_BUFFER_SIZE);
   gint sz = recvAll(data, HTTP_BUFFER_SIZE);
@@ -90,10 +79,10 @@ Glib::RefPtr<Gdk::Pixbuf> HttpClient::loadAvatar(std::string contactAddress, Ava
   if(!connected && !connect(HOST)) {
     return result;
   }
-  DetailedAddress addr;
-  addr = parseAddress(contactAddress);
+  std::pair<std::string, std::string> addr;
+  addr = MrimUtils::splitAddress(contactAddress);
   Glib::ustring avatarStr = (atype == AVATAR_BIG ? "_mrimavatar" : "_mrimavatarsmall");
-  Glib::ustring request = "GET /" + addr.domain + "/" + addr.user + "/" + avatarStr + " HTTP/1.1 \r\nHost: " + getServerHost() + "\r\n\r\n";
+  Glib::ustring request = "GET /" + addr.second + "/" + addr.first + "/" + avatarStr + " HTTP/1.1 \r\nHost: " + getServerHost() + "\r\n\r\n";
   send(sock, request.c_str(), request.length(), 0);
   char *data = (char*) g_malloc0(HTTP_BUFFER_SIZE);
   gint sz = recvAll(data, HTTP_BUFFER_SIZE);

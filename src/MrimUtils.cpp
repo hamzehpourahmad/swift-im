@@ -17,7 +17,6 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
 #include <string>
 
 #include "MrimUtils.h"
@@ -27,37 +26,36 @@
 using namespace Swift;
 
 Glib::ustring MrimUtils::getContactStatusByCode(guint32 statusCode) {
+  if(statusCode & STATUS_FLAG_INVISIBLE) return _("Invisible");
   switch(statusCode) {
     case STATUS_OFFLINE:
-      return "Offline";
+      return _("Offline");
     case STATUS_ONLINE:
-      return "Online";
+      return _("Online");
     case STATUS_AWAY:
-      return "Away";
+      return _("Away");
     case STATUS_UNDETERMINATED:
-      return "Undeterminated";
-    case STATUS_FLAG_INVISIBLE:
-      return "Invisible";
+      return _("Undeterminated");
   }
-  return "Unknown";
+  return _("Unknown");
 }
 
 Glib::ustring MrimUtils::getMessageStatusByCode(guint32 statusCode) {
   switch(statusCode) {
     case MESSAGE_DELIVERED:
-      return "Message delivered";
+      return _("Message delivered");
     case MESSAGE_REJECTED_INTERR:
-      return "Internal server error";
+      return _("Internal server error");
     case MESSAGE_REJECTED_NOUSER:
-      return "User recipient doesn't exist";
+      return _("Recipient user doesn't exist");
     case MESSAGE_REJECTED_LIMIT_EXCEEDED:
-      return "User recipient is offline and message is too large to store it into mailbox";
+      return _("Recipient user is offline and message is too large to put it into mailbox");
     case MESSAGE_REJECTED_TOO_LARGE:
-      return "Message size exceeded limits";
+      return _("Message size exceeded limits");
     case MESSAGE_REJECTED_DENY_OFFMSG:
-      return "User recipient is offline and his mailbox settings doesn't allow offline messages";
+      return _("Recipient user is offline and his mailbox settings don't allow offline messages");
   }
-  return "Unknown";
+  return _("Unknown");
 }
 
 Glib::RefPtr<Gdk::Pixbuf> MrimUtils::prepareAvatar(Glib::ustring address) {
@@ -89,9 +87,9 @@ Glib::RefPtr<Gdk::Pixbuf> MrimUtils::getCachedAvatar(Glib::ustring address) {
     try {
       result = Gdk::Pixbuf::create_from_file(avatarFilePath);
     } catch (Glib::FileError& err) {
-      std::cerr << "Error loading avatar. " << err.what() << std::endl;
+      appInstance->logEvent("Error loading avatar. " + err.what(), SEVERITY_WARNING);
     } catch (Gdk::PixbufError& err) {
-      std::cerr << "Error loading avatar. " << err.code() << std::endl;
+      appInstance->logEvent("Error loading avatar. " + err.code(), SEVERITY_WARNING);
     }
   }
   return result;
@@ -104,9 +102,21 @@ void MrimUtils::cacheAvatar(Glib::ustring address, Glib::RefPtr<Gdk::Pixbuf> pb)
     try {
       pb->save(dir + G_DIR_SEPARATOR + "avatar", "png");
     } catch (Glib::FileError& err) {
-      std::cerr << "Error saving avatar. " << err.what() << std::endl;
+      appInstance->logEvent("Error saving avatar. " + err.what(), SEVERITY_WARNING);
     } catch (Gdk::PixbufError& err) {
-      std::cerr << "Error saving avatar. " << err.code() << std::endl;
+      appInstance->logEvent("Error saving avatar. " + err.code(), SEVERITY_WARNING);
     }
   }
+}
+
+std::pair<std::string, std::string> MrimUtils::splitAddress(std::string contactAddress) {
+  appInstance->logEvent("MrimUtils::splitAddress()", SEVERITY_DEBUG);
+  std::string user, domain;
+  gint p = contactAddress.find("@");
+  if(p != std::string::npos) {
+    user = contactAddress.substr(0, p);
+    gint point = contactAddress.rfind(".");
+    domain = contactAddress.substr(p+1, point - p - 1);
+  }
+  return std::make_pair(user, domain);
 }

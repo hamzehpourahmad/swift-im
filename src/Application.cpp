@@ -21,10 +21,15 @@
 #include <iostream>
 #include <sstream>
 
+#ifdef HAVE_LOCALE_H
+  #include <locale.h>
+#endif
+
 #include <gtkmm/main.h>
 #include <gtkmm/messagedialog.h>
 #include <glibmm/ustring.h>
 #include <glibmm/spawn.h>
+#include <glibmm/i18n.h>
 
 #include "Application.h"
 #include "Utils.h"
@@ -48,6 +53,7 @@ std::string Application::getVersion() {
 
 Application::Application() {
   initVariables();
+  initLocale();
   applicationInstance = this;
   Glib::set_application_name("Swift-IM");
   // open log file in 'append' mode.
@@ -98,6 +104,18 @@ Application::~Application() {
   delete aboutDialog;
 }
 
+/*
+ * Initialises the gettext translation system.
+ */
+void Application::initLocale() {
+#ifdef HAVE_LOCALE_H
+  setlocale(LC_ALL, "");
+#endif
+  bindtextdomain(SWIFTIM_PACKAGE_NAME, getVariable("SWIFTIM_LOCALE_DIR").c_str());
+  bind_textdomain_codeset(SWIFTIM_PACKAGE_NAME, "UTF-8");
+  textdomain(SWIFTIM_PACKAGE_NAME);
+}
+
 void Application::quit() {
   Gtk::Main::quit();
 }
@@ -123,6 +141,7 @@ void Application::initVariables() {
   }
   variables["SWIFTIM_INSTALL_PREFIX"] = prefix;
   variables["SWIFTIM_DATA_DIR"] = variables["SWIFTIM_INSTALL_PREFIX"] + G_DIR_SEPARATOR + "share" + G_DIR_SEPARATOR + "swift-im";
+  variables["SWIFTIM_LOCALE_DIR"] = variables["SWIFTIM_INSTALL_PREFIX"] + G_DIR_SEPARATOR + "share" + G_DIR_SEPARATOR + "locale";
   variables["SWIFTIM_USER_DATA_DIR"] = Glib::get_user_data_dir() + G_DIR_SEPARATOR + "swift-im";
   variables["SWIFTIM_HOMEPAGE"] = "http://code.google.com/p/swift-im/";
 
@@ -135,11 +154,11 @@ void Application::initVariables() {
   // this color is #ADD8E6FF in hex. last 'ff' is opacity level.
   variables["AVATAR_BGCOLOR"] = "2916673279";
 
-  #ifdef G_OS_WIN32
+#ifdef G_OS_WIN32
   variables["ENDL"] = "\r\n";
-  #else
+#else
   variables["ENDL"] = "\n";
-  #endif
+#endif
 }
 
 Glib::ustring Application::getVariable(std::string key) {

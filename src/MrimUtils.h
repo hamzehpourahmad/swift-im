@@ -20,6 +20,8 @@
 #ifndef MrimUtils_h
 #define MrimUtils_h
 
+#include <utility>
+
 #include <glibmm/ustring.h>
 #include <gdkmm/pixbuf.h>
 
@@ -33,6 +35,7 @@ namespace Swift {
       static Glib::ustring getContactStatusByCode(guint32 statusCode);
       static Glib::ustring getMessageStatusByCode(guint32 statusCode);
       static Glib::RefPtr<Gdk::Pixbuf> prepareAvatar(Glib::ustring address);
+      static std::pair<std::string, std::string> splitAddress(std::string contactAddress);
     private:
       static Glib::RefPtr<Gdk::Pixbuf> getCachedAvatar(Glib::ustring address);
       static void cacheAvatar(Glib::ustring address, Glib::RefPtr<Gdk::Pixbuf> pb);

@@ -52,17 +52,18 @@ namespace Swift {
     public:
       ChatTabs(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade);
       ~ChatTabs();
-      void createTab(Glib::ustring contactAddress);
+      gint createTab(Glib::ustring contactAddress);
       void showTab(Glib::ustring contactAddress);
-      void closeTab(Tabs::iterator it);
+      void closeTab(gint tabIndex);
       void closeAll();
       void switchTab();
       void notifyWriting(Glib::ustring contactAddress);
       void updateStatus(MrimContact contact);
       void setUrgencyHint(MrimContact contact, bool urgent);
-      Tabs::iterator getTab(Glib::ustring address);
-      Tabs::iterator getTab(gint pageNumber);
-      Tabs::iterator getCurrentTab();
+      gint getTab(Glib::ustring address);
+      gint getTab(gint pageNumber);
+      ChatTab getNthTab(gint tabIndex);
+      ChatTab getCurrentTab();
     
     private:
       Tabs tabs;
@@ -71,7 +72,7 @@ namespace Swift {
     protected:
       // signal handlers
       void onSwitchTab(GtkNotebookPage *page, gint pageNumber);
-      void onCloseTabClicked(Tabs::iterator it);
+      void onCloseTabClicked(gint tabIndex);
       bool onNotifyWritingExpire(Glib::ustring contactAddress);
       void onHistoryTextScrollChanged(Gtk::Adjustment* adjustment);
   };

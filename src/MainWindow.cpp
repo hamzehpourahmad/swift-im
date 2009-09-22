@@ -22,6 +22,7 @@
 #include "ContactsTreeColumns.h"
 #include "MrimUtils.h"
 
+using namespace Glib;
 using namespace Swift;
 
 
@@ -48,13 +49,13 @@ void MainWindow::menuItemExitOnActivate() {
 }
 
 void MainWindow::menuItemAboutOnActivate() {
-  appInstance->aboutDialog->run();
+  appInstance->aboutDialog->present();
 }
 
 void MainWindow::onUserInfoReceive(UserInfo ui) {
   appInstance->logEvent("MainWindow::onUserInfoReceive()", SEVERITY_DEBUG);
   usernameLabel->set_label("<span size='medium' weight='bold'>" + ui["MRIM.NICKNAME"] + "</span>");
-  mailStatusLabel->set_label("<span size='small' weight='bold'>Messages unread: " + ui["MESSAGES.UNREAD"] + "</span>");
+  mailStatusLabel->set_label("<span size='small' weight='bold'>" + ustring::compose(_("Messages unread: %1"), ui["MESSAGES.UNREAD"]) + "</span>");
   appInstance->mUser->setAvatar(MrimUtils::prepareAvatar(appInstance->mUser->getAddress()));
   userAvatarImage->set(appInstance->mUser->getAvatar());
 }

@@ -32,8 +32,13 @@ namespace Swift {
     public:
       static void openUri(std::string uri);
       static bool createDir(Glib::ustring path, int mode = 0755);
-      static gint parseGint(std::string s);
-      static guint32 parseGuint32(std::string s);
+      template <typename T> static T parseNum(std::string s) {
+        std::stringstream str;
+        T result = 0;
+        str << s;
+        str >> result;
+        return result;
+      }
   };
 };
 

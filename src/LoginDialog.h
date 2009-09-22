@@ -24,12 +24,32 @@ namespace Swift {
   class LoginDialog;
 };
 
+#include <string>
+
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/button.h>
+#include <gtkmm/treestore.h>
+#include <gtkmm/combobox.h>
 #include <libglademm.h>
 
 namespace Swift {
+  const std::string domains[4] = {
+    "@mail.ru",
+    "@list.ru",
+    "@bk.ru",
+    "@inbox.ru"
+  };
+  class DomainComboColumns : public Gtk::TreeModel::ColumnRecord {
+    public:
+      Gtk::TreeModelColumn <gint> domainIndex;
+      Gtk::TreeModelColumn <std::string> domainTitle;
+      DomainComboColumns() {
+        add(domainIndex);
+        add(domainTitle);
+      };
+  };
+  
   class LoginDialog : public Gtk::Dialog {
     public:
       LoginDialog(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade);
@@ -38,6 +58,12 @@ namespace Swift {
       Gtk::Button *cancelButton;
       Gtk::Entry *loginEntry;
       Gtk::Entry *passwordEntry;
+      Gtk::ComboBox* domainCombo;
+      
+    private:
+      Glib::RefPtr<Gtk::TreeStore> mdlCombo;
+      DomainComboColumns columns;
+      
     protected:
       // signal handlers
       void loginButtonOnClicked();

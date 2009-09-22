@@ -21,6 +21,7 @@
 #include "Application.h"
 #include "MrimUtils.h"
 
+using namespace Glib;
 using namespace Swift;
 
 ChatWindow::ChatWindow(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade) : Gtk::Window(baseObject) {
@@ -43,16 +44,16 @@ ChatWindow::ChatWindow(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Gla
  */
 void ChatWindow::sendButtonOnClicked() {
   appInstance->logEvent("ChatWindow::sendButtonOnClicked()", SEVERITY_DEBUG);
-  Tabs::iterator curTab = chatTabs->getCurrentTab();
-  Glib::ustring address = curTab->address;
-  Glib::ustring message = curTab->messageText->get_buffer()->get_text();
+  ChatTab curTab = chatTabs->getCurrentTab();
+  Glib::ustring address = curTab.address;
+  Glib::ustring message = curTab.messageText->get_buffer()->get_text();
   if(!address.empty() && !message.empty()) {
     guint32 messageId;
     appInstance->mClient->sendMessage(0, address, message, " ", &messageId);
     // save message in message queue
     mMessageQueue[messageId] = address;
-    curTab->historyText->addOwnMessage(messageId, message);
-    curTab->messageText->get_buffer()->set_text("");
+    curTab.historyText->addOwnMessage(messageId, message);
+    curTab.messageText->get_buffer()->set_text("");
     sigc::slot<bool> timeoutSlot = sigc::bind(sigc::mem_fun(*this, &ChatWindow::onMessageSendTimeout), messageId);
     // check message delivery status after 'pingPeriod' seconds.
     Glib::signal_timeout().connect(timeoutSlot, appInstance->mConnection->getPingPeriod() * 1000);
@@ -100,7 +101,8 @@ bool ChatWindow::onMessageSendTimeout(guint32 messageId) {
   appInstance->logEvent("ChatWindow::onMessageSendTimeout()", SEVERITY_DEBUG);
   MessageQueue::iterator it = mMessageQueue.find(messageId);
   if(it != mMessageQueue.end()) {
-    chatTabs->getTab(it->second)->historyText->rejectMessage(messageId, "Timeout period expired");
+    gint tabIndex = chatTabs->getTab(it->second);
+    chatTabs->getNthTab(tabIndex).historyText->rejectMessage(messageId, _("Timeout period expired"));
     mMessageQueue.erase(it);
   }
   return false;
@@ -114,11 +116,12 @@ void ChatWindow::onMessageStatus(guint32 messageId, guint32 status) {
   appInstance->logEvent("ChatWindow::onMessageStatus()", SEVERITY_DEBUG);
   MessageQueue::iterator it = mMessageQueue.find(messageId);
   if(it != mMessageQueue.end()) {
+    gint tabIndex = chatTabs->getTab(it->second);
     if(status == MESSAGE_DELIVERED) {
-      chatTabs->getTab(it->second)->historyText->confirmMessage(messageId);
+      chatTabs->getNthTab(tabIndex).historyText->confirmMessage(messageId);
     }
     else {
-      chatTabs->getTab(it->second)->historyText->rejectMessage(messageId, MrimUtils::getMessageStatusByCode(status));
+      chatTabs->getNthTab(tabIndex).historyText->rejectMessage(messageId, MrimUtils::getMessageStatusByCode(status));
     }
     mMessageQueue.erase(it);
   }
@@ -139,7 +142,7 @@ void ChatWindow::onMessageReceive(guint32 messageId, guint32 flags, Glib::ustrin
     showWindow = true;
     makeUrgent = true;
     chatTabs->createTab(from);
-    chatTabs->getTab(from)->historyText->addReceivedMessage(from, message);
+    chatTabs->getNthTab(chatTabs->getTab(from)).historyText->addReceivedMessage(from, message);
   }
   else if(flags & MESSAGE_FLAG_AUTHORIZE) {
     // authorization request
@@ -149,7 +152,7 @@ void ChatWindow::onMessageReceive(guint32 messageId, guint32 flags, Glib::ustrin
     showWindow = true;
     makeUrgent = true;
     chatTabs->createTab(from);
-    chatTabs->getTab(from)->historyText->addReceivedMessage(from, message);
+    chatTabs->getNthTab(chatTabs->getTab(from)).historyText->addReceivedMessage(from, message);
   }
   else if(flags & MESSAGE_FLAG_CONTACT) {
     // message contains contact list
@@ -165,13 +168,13 @@ void ChatWindow::onMessageReceive(guint32 messageId, guint32 flags, Glib::ustrin
     showWindow = true;
     makeUrgent = true;
     chatTabs->createTab(from);
-    chatTabs->getTab(from)->historyText->addReceivedMessage(from, message);
+    chatTabs->getNthTab(chatTabs->getTab(from)).historyText->addReceivedMessage(from, message);
   }
   else {
     showWindow = true;
     makeUrgent = true;
     chatTabs->createTab(from);
-    chatTabs->getTab(from)->historyText->addReceivedMessage(from, message);
+    chatTabs->getNthTab(chatTabs->getTab(from)).historyText->addReceivedMessage(from, message);
   }
 
   if(showWindow && !is_visible()) {
