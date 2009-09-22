@@ -155,7 +155,7 @@ bool MrimConnection::connect() {
 void MrimConnection::pingCallback() {
   appInstance->logEvent("MrimConnection::pingCallback()", SEVERITY_DEBUG);
   do {
-    gulong interval = mPingPeriod * 1000000;
+    gulong interval = mPingPeriod * G_USEC_PER_SEC;
     g_usleep(interval);
     if(!mIsPinging) return;
     MrimPacket p(MRIM_CS_PING);
@@ -248,7 +248,7 @@ bool MrimConnection::connectionHangupCallback(Glib::IOCondition condition) {
   appInstance->logEvent("MrimConnection::connectionHangupCallback()", SEVERITY_DEBUG);
   if(condition & Glib::IO_HUP) {
     appInstance->logEvent("Connection lost.", SEVERITY_WARNING);
-    appInstance->showMessage("Connection error", "Connection to server has lost", "Check your connection status", Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
+    appInstance->showMessage(_("Connection error"), _("Connection to server has lost"), _("Check your connection status"), Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
     disconnect();
   }
 }

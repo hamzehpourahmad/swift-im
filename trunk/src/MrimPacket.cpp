@@ -324,8 +324,9 @@ void MrimPacket::receiveContactList(GroupList *gl) {
         }
       }
       contact.setIndex(cc++);
-      if(contact.getServerFlags() == CONTACT_INTFLAG_NOT_AUTHORIZED) {
+      if(contact.getServerFlags() & CONTACT_INTFLAG_NOT_AUTHORIZED) {
         // if contact isn't authorized
+        contact.setGroup(GROUP_INDEX_NOT_AUTHORIZED);
         (*gl)[GROUP_INDEX_NOT_AUTHORIZED].addContact(contact);
       }
       else {
@@ -334,6 +335,11 @@ void MrimPacket::receiveContactList(GroupList *gl) {
       g_usleep(CONTACT_FETCH_DELAY);
     }
   }
+  /*
+  for(GroupList::iterator i = gl->begin(); i != gl->end(); i++) {
+    i->second.debugPrint();
+  }
+  */
 }
 
 void MrimPacket::receiveStatus(guint32 *status, Glib::ustring *address) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.3 on Tue Sep 15 12:04:26 2009 -->
+<!--Generated with glade3 3.4.3 on Sun Sep 20 17:07:51 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="mainWindow">
     <property name="visible">True</property>
@@ -176,6 +176,7 @@
     <property name="title" translatable="yes">Authorization</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
+    <property name="window_position">GTK_WIN_POS_CENTER_ALWAYS</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="loginDialogVBox">
@@ -184,59 +185,84 @@
         <property name="spacing">2</property>
         <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
-          <widget class="GtkTable" id="loginPassTable">
+          <widget class="GtkHBox" id="hbox">
             <property name="visible">True</property>
-            <property name="n_rows">2</property>
-            <property name="n_columns">2</property>
-            <property name="row_spacing">5</property>
+            <property name="spacing">5</property>
             <child>
-              <widget class="GtkLabel" id="loginLabel">
+              <widget class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">E-mail:</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                <child>
+                  <widget class="GtkLabel" id="loginLabel">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">E-mail:</property>
+                  </widget>
+                  <packing>
+                    <property name="fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="passwordLabel">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Password:</property>
+                  </widget>
+                  <packing>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </widget>
             </child>
             <child>
-              <widget class="GtkEntry" id="loginEntry">
+              <widget class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
-                <signal name="activate" handler="loginButtonOnClicked"/>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                <child>
+                  <widget class="GtkHBox" id="hbox5">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkEntry" id="loginEntry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">●</property>
+                        <signal name="activate" handler="loginButtonOnClicked"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkComboBox" id="domainCombo">
+                        <property name="visible">True</property>
+                      </widget>
+                      <packing>
+                        <property name="pack_type">GTK_PACK_END</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkEntry" id="passwordEntry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="visibility">False</property>
+                    <property name="invisible_char">●</property>
+                    <signal name="activate" handler="loginButtonOnClicked"/>
+                  </widget>
+                  <packing>
+                    <property name="pack_type">GTK_PACK_END</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </widget>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkLabel" id="passwordLabel">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Password</property>
-              </widget>
-              <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkEntry" id="passwordEntry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="visibility">False</property>
-                <property name="invisible_char">●</property>
-                <signal name="activate" handler="loginButtonOnClicked"/>
-              </widget>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </widget>
           <packing>
             <property name="fill">False</property>
-            <property name="padding">5</property>
-            <property name="position">2</property>
+            <property name="padding">10</property>
           </packing>
         </child>
         <child internal-child="action_area">
@@ -278,6 +304,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="pack_type">GTK_PACK_END</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </widget>

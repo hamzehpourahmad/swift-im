@@ -47,13 +47,13 @@ ContactsTreeWidget::ContactsTreeWidget(BaseObjectType* baseObject, const Glib::R
 
   statusRenderer = Gtk::manage(new Gtk::CellRendererPixbuf);
   statusRenderer->property_xalign() = 0.0;
-  colCount = append_column("Status", *statusRenderer);
+  colCount = append_column(_("Status"), *statusRenderer);
   pColumn = get_column(colCount - 1);
   pColumn->add_attribute(statusRenderer->property_pixbuf(), columns.statusImage);
 
   textRenderer = Gtk::manage(new Gtk::CellRendererText);
   textRenderer->property_xalign() = 0.0;
-  colCount = append_column("Nickname", *textRenderer);
+  colCount = append_column(_("Nickname"), *textRenderer);
   pColumn = get_column(colCount - 1);
   pColumn->set_resizable(true);
   pColumn->add_attribute(textRenderer->property_markup(), columns.contactNickname);
@@ -171,9 +171,9 @@ void ContactsTreeWidget::loadContactList() {
 
 Glib::RefPtr<Gdk::Pixbuf> ContactsTreeWidget::resizeAvatar(Glib::RefPtr<Gdk::Pixbuf> src) {
   appInstance->logEvent("ContactsTreeWidget::resizeAvatar()", SEVERITY_DEBUG);
-  gint WIDTH = Utils::parseGint(appInstance->getVariable("AVATAR_WIDTH"));
-  gint HEIGHT = Utils::parseGint(appInstance->getVariable("AVATAR_HEIGHT"));
-  guint32 BGCOLOR = Utils::parseGuint32(appInstance->getVariable("AVATAR_BGCOLOR"));
+  gint WIDTH = Utils::parseNum<gint>(appInstance->getVariable("AVATAR_WIDTH"));
+  gint HEIGHT = Utils::parseNum<gint>(appInstance->getVariable("AVATAR_HEIGHT"));
+  guint32 BGCOLOR = Utils::parseNum<guint32>(appInstance->getVariable("AVATAR_BGCOLOR"));
   Glib::RefPtr<Gdk::Pixbuf> bg = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, true, 8, WIDTH, HEIGHT);
   bg->fill(BGCOLOR);
   gint w, h, tw, th, dx, dy;

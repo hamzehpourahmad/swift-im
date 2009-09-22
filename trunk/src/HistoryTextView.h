@@ -24,6 +24,7 @@ namespace Swift {
   class HistoryTextView;
 };
 
+#include <vector>
 #include <map>
 
 #include <gtkmm/textview.h>
@@ -32,6 +33,10 @@ namespace Swift {
   struct MessageBounds {
     Glib::RefPtr<Gtk::TextBuffer::Mark> beginMark;
     Glib::RefPtr<Gtk::TextBuffer::Mark> endMark;
+  };
+  struct TextPart {
+    Glib::ustring text;
+    bool smile;
   };
   typedef std::map <guint32, MessageBounds> MessageBoundsList;
   class HistoryTextView : public Gtk::TextView {
@@ -47,8 +52,11 @@ namespace Swift {
       Glib::RefPtr<Gtk::TextBuffer::TagTable> tagTable;
       Glib::RefPtr<Gtk::TextBuffer::Tag> ownTag, fromTag, underlinedTag, timeTag;
       MessageBoundsList history;
+      Gtk::TextBuffer::iterator addMessage(Glib::ustring msg, bool me);
       void insertTime();
       void newLine();
+      bool scanSmiles(Glib::ustring str, std::vector<TextPart> *textParts);
+      Glib::RefPtr<Gdk::Pixbuf> getSmile(Glib::ustring smileTag);
   };
 };
 

@@ -22,7 +22,10 @@
 #include "HistoryTextView.h"
 #include "Application.h"
 #include "MrimUtils.h"
+#include <gtkmm/image.h>
+#include <gtkmm/stock.h>
 
+using namespace Glib;
 using namespace Swift;
 
 
@@ -78,8 +81,7 @@ void HistoryTextView::addOwnMessage(guint32 messageId, Glib::ustring body) {
   insertTime();
   buffer->insert_with_tag(buffer->end(), appInstance->mUser->getNickname() + ": ", ownTag);
   buffer->move_mark(newMessage.beginMark, buffer->end());
-  buffer->insert_with_tag(buffer->end(), body, underlinedTag);
-  buffer->move_mark(newMessage.endMark, buffer->end());
+  buffer->move_mark(newMessage.endMark, addMessage(body, true));
   newLine();
   history[messageId] = newMessage;
 }
@@ -93,8 +95,30 @@ void HistoryTextView::addReceivedMessage(Glib::ustring from, Glib::ustring body)
   }
   insertTime();
   buffer->insert_with_tag(buffer->end(), author + ": ", fromTag);
-  buffer->insert(buffer->end(), body);
+  addMessage(body, false);
   newLine();
+}
+
+Gtk::TextBuffer::iterator HistoryTextView::addMessage(Glib::ustring msg, bool me) {
+  appInstance->logEvent("HistoryTextView::addMessage()", SEVERITY_DEBUG);
+  std::vector<TextPart> parts;
+  scanSmiles(msg, &parts);
+  for(gint i = 0; i < parts.size(); i++) {
+    if(parts[i].smile) {
+      buffer->insert_pixbuf(buffer->end(), getSmile(parts[i].text));
+    }
+    else {
+      if(me) {
+        buffer->insert_with_tag(buffer->end(), parts[i].text, underlinedTag);
+      }
+      else {
+        buffer->insert(buffer->end(), parts[i].text);
+      }
+    }
+  }
+  Gtk::TextBuffer::iterator result = buffer->end();
+  newLine();
+  return result;
 }
 
 void HistoryTextView::confirmMessage(guint32 messageId) {
@@ -109,7 +133,58 @@ void HistoryTextView::rejectMessage(guint32 messageId, Glib::ustring reason) {
   appInstance->logEvent("HistoryTextView::rejectMessage()", SEVERITY_DEBUG);
   if(history[messageId].beginMark) {
     Glib::ustring message = buffer->get_text(history[messageId].beginMark->get_iter(), history[messageId].endMark->get_iter());
-    buffer->insert_with_tag(buffer->end(), "Maybe your message: \n" + message + "\nwas not delivered. Server answer: " + reason, underlinedTag);
+    buffer->insert_with_tag(buffer->end(), ustring::compose(_("Maybe your message: \n%1\nwas not delivered. Server answer: %2"), message, reason), underlinedTag);
     newLine();
   }
+}
+
+bool HistoryTextView::scanSmiles(Glib::ustring str, std::vector<TextPart> *textParts) {
+  const gchar MRIM_SMILES_REGEXP[] = "<SMILE>\\s*id\\s*=\\s*[0-9]+\\s+alt\\s*=\\s*'.+?'\\s*</SMILE>";
+  TextPart part;
+  GError* err = NULL;
+  GMatchInfo* matchInfo;
+  GRegexCompileFlags cmpFlags = (GRegexCompileFlags)(G_REGEX_CASELESS | G_REGEX_MULTILINE | G_REGEX_DOTALL);
+  GRegexMatchFlags matchFlags = (GRegexMatchFlags)0;
+  GRegex* regex = g_regex_new(MRIM_SMILES_REGEXP, cmpFlags, matchFlags, NULL);
+  g_regex_match(regex, str.c_str(), matchFlags, &matchInfo);
+  gint curPos = 0;
+  while(g_match_info_matches(matchInfo)) {
+    gint start = -1, end = -1;
+    g_match_info_fetch_pos(matchInfo, 0, &start, &end);
+    gchar* matchedStr = g_match_info_fetch(matchInfo, 0);
+    if(start != -1 && end != -1) {
+      // first add text
+      part.text = str.substr(curPos, start - curPos);
+      part.smile = false;
+      textParts->push_back(part);
+      
+      // then add smile tag
+      part.text = Glib::ustring(matchedStr);
+      part.smile = true;
+      textParts->push_back(part);
+      curPos = end;
+    }
+    g_free(matchedStr);
+    g_match_info_next(matchInfo, NULL);
+  }
+  // check for remaining text
+  // for instance, this case will be true if str doesn't have smile tags at all
+  if(curPos <= str.size() - 1) {
+    part.text = str.substr(curPos);
+    part.smile = false;
+    textParts->push_back(part);
+  }
+  g_match_info_free(matchInfo);
+  g_regex_unref(regex);
+  if(err != NULL) {
+    appInstance->logEvent(Glib::ustring(err->message), SEVERITY_DEBUG);
+    g_error_free(err);
+    return false;
+  }
+  return true;
+}
+
+Glib::RefPtr<Gdk::Pixbuf> HistoryTextView::getSmile(Glib::ustring smileTag) {
+  Glib::RefPtr<Gdk::Pixbuf> result = Gdk::Pixbuf::create_from_file(appInstance->getVariable("SWIFTIM_DATA_DIR") + G_DIR_SEPARATOR + "img" + G_DIR_SEPARATOR + "smiles" + G_DIR_SEPARATOR + "smile.png");
+  return result;
 }

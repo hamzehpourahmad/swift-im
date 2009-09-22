@@ -70,7 +70,7 @@ void StatusComboWidget::onChanged() {
          * login
          */
         appInstance->loginDialog->resetEntries();
-        appInstance->loginDialog->run();
+        appInstance->loginDialog->present();
       }
     }
   }
