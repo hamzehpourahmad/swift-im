@@ -56,7 +56,6 @@ namespace Swift {
       void insertTime();
       void newLine();
       bool scanSmiles(Glib::ustring str, std::vector<TextPart> *textParts);
-      Glib::RefPtr<Gdk::Pixbuf> getSmile(Glib::ustring smileTag);
   };
 };
 
