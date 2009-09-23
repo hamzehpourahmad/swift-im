@@ -38,6 +38,7 @@ namespace Swift {
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/aboutdialog.h>
 #include <glibmm/i18n.h>
+#include <glibmm/keyfile.h>
 
 #include "MainWindow.h"
 #include "LoginDialog.h"
@@ -68,6 +69,7 @@ namespace Swift {
       void logEvent(Glib::ustring message, LogSeverity svty);
       static Application* getInstance();
       Glib::RefPtr<Gdk::Pixbuf> getStatusImage(guint32 statusCode);
+      Glib::RefPtr<Gdk::Pixbuf> getSmileImage(Glib::ustring smileId);
       MainWindow* mainWindow;
       LoginDialog* loginDialog;
       ChatWindow* chatWindow;
@@ -83,6 +85,7 @@ namespace Swift {
     private:
       std::map<std::string, Glib::ustring> variables;
       std::map <guint32, Glib::RefPtr<Gdk::Pixbuf> > images;
+      std::map <Glib::ustring, Glib::RefPtr<Gdk::Pixbuf> > smiles;
       Glib::RefPtr<Glib::IOChannel> logfile;
       Glib::ustring getSeverityStr(LogSeverity svty);
       void initLocale();

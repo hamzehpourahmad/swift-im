@@ -17,6 +17,8 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string>
+
 #include <pangomm/fontdescription.h>
 
 #include "HistoryTextView.h"
@@ -102,18 +104,32 @@ void HistoryTextView::addReceivedMessage(Glib::ustring from, Glib::ustring body)
 Gtk::TextBuffer::iterator HistoryTextView::addMessage(Glib::ustring msg, bool me) {
   appInstance->logEvent("HistoryTextView::addMessage()", SEVERITY_DEBUG);
   std::vector<TextPart> parts;
-  scanSmiles(msg, &parts);
-  for(gint i = 0; i < parts.size(); i++) {
-    if(parts[i].smile) {
-      buffer->insert_pixbuf(buffer->end(), getSmile(parts[i].text));
+  if(scanSmiles(msg, &parts)) {
+    for(gint i = 0; i < parts.size(); i++) {
+      bool insertText = true;
+      if(parts[i].smile) {
+        Glib::RefPtr<Gdk::Pixbuf> smileImg = appInstance->getSmileImage(parts[i].text);
+        if(smileImg) {
+          buffer->insert_pixbuf(buffer->end(), smileImg);
+          insertText = false;
+        }
+      }
+      if(insertText) {
+        if(me) {
+          buffer->insert_with_tag(buffer->end(), parts[i].text, underlinedTag);
+        }
+        else {
+          buffer->insert(buffer->end(), parts[i].text);
+        }
+      }
+    }
+  }
+  else {
+    if(me) {
+      buffer->insert_with_tag(buffer->end(), msg, underlinedTag);
     }
     else {
-      if(me) {
-        buffer->insert_with_tag(buffer->end(), parts[i].text, underlinedTag);
-      }
-      else {
-        buffer->insert(buffer->end(), parts[i].text);
-      }
+      buffer->insert(buffer->end(), msg);
     }
   }
   Gtk::TextBuffer::iterator result = buffer->end();
@@ -139,8 +155,9 @@ void HistoryTextView::rejectMessage(guint32 messageId, Glib::ustring reason) {
 }
 
 bool HistoryTextView::scanSmiles(Glib::ustring str, std::vector<TextPart> *textParts) {
-  const gchar MRIM_SMILES_REGEXP[] = "<SMILE>\\s*id\\s*=\\s*[0-9]+\\s+alt\\s*=\\s*'.+?'\\s*</SMILE>";
+  const gchar MRIM_SMILES_REGEXP[] = "<###[0-9]+###img[0-9]+>|<SMILE>\\s*id\\s*=\\s*([0-9]+)\\s+alt\\s*=\\s*'.+?'\\s*</SMILE>";
   TextPart part;
+  std::string rawStr = str.raw();
   GError* err = NULL;
   GMatchInfo* matchInfo;
   GRegexCompileFlags cmpFlags = (GRegexCompileFlags)(G_REGEX_CASELESS | G_REGEX_MULTILINE | G_REGEX_DOTALL);
@@ -152,25 +169,32 @@ bool HistoryTextView::scanSmiles(Glib::ustring str, std::vector<TextPart> *textP
     gint start = -1, end = -1;
     g_match_info_fetch_pos(matchInfo, 0, &start, &end);
     gchar* matchedStr = g_match_info_fetch(matchInfo, 0);
+    gchar* matchedStr1 = g_match_info_fetch(matchInfo, 1);
     if(start != -1 && end != -1) {
       // first add text
-      part.text = str.substr(curPos, start - curPos);
+      part.text = rawStr.substr(curPos, start - curPos);
       part.smile = false;
       textParts->push_back(part);
-      
-      // then add smile tag
-      part.text = Glib::ustring(matchedStr);
+
+      // then add smile id
+      if(g_strrstr(matchedStr, "<###") == NULL) {
+        part.text = Glib::ustring(matchedStr1);
+      }
+      else {
+        part.text = Glib::ustring(matchedStr);
+      }
       part.smile = true;
       textParts->push_back(part);
       curPos = end;
     }
     g_free(matchedStr);
+    g_free(matchedStr1);
     g_match_info_next(matchInfo, NULL);
   }
   // check for remaining text
   // for instance, this case will be true if str doesn't have smile tags at all
-  if(curPos <= str.size() - 1) {
-    part.text = str.substr(curPos);
+  if(curPos < rawStr.size() - 1) {
+    part.text = rawStr.substr(curPos);
     part.smile = false;
     textParts->push_back(part);
   }
@@ -182,9 +206,4 @@ bool HistoryTextView::scanSmiles(Glib::ustring str, std::vector<TextPart> *textP
     return false;
   }
   return true;
-}
-
-Glib::RefPtr<Gdk::Pixbuf> HistoryTextView::getSmile(Glib::ustring smileTag) {
-  Glib::RefPtr<Gdk::Pixbuf> result = Gdk::Pixbuf::create_from_file(appInstance->getVariable("SWIFTIM_DATA_DIR") + G_DIR_SEPARATOR + "img" + G_DIR_SEPARATOR + "smiles" + G_DIR_SEPARATOR + "smile.png");
-  return result;
 }

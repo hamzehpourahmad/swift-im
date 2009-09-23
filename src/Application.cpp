@@ -233,6 +233,42 @@ void Application::loadResources() {
     }
     parts.pop_back();
   }
+  
+  // Loading smiles
+  Glib::KeyFile smilesThemeFile;
+  bool wasError = false;
+  try {
+    smilesThemeFile.load_from_file(getVariable("SWIFTIM_DATA_DIR") + G_DIR_SEPARATOR + "img" + G_DIR_SEPARATOR + "smiles" + G_DIR_SEPARATOR + "theme");
+  }
+  catch(Glib::FileError &err) {
+    logEvent("Error loading smiles theme file: " + err.what(), SEVERITY_WARNING);
+    wasError = true;
+  }
+  catch(Glib::KeyFileError &err) {
+    logEvent("Error loading smiles theme file: " + err.what(), SEVERITY_WARNING);
+    wasError = true;
+  }
+  if(!wasError) {
+    std::vector<Glib::ustring> keys = smilesThemeFile.get_keys("smiles");
+    Glib::ustring smilesDir = getVariable("SWIFTIM_DATA_DIR") + G_DIR_SEPARATOR + "img" + G_DIR_SEPARATOR + "smiles" + G_DIR_SEPARATOR;
+    //logEvent("Smiles dir: " + smilesDir, SEVERITY_DEBUG);
+    for(gint i = 0; i < keys.size(); i++) {
+      Glib::ustring filename = smilesDir + smilesThemeFile.get_string("smiles", keys[i]);
+      Glib::RefPtr<Gdk::Pixbuf> pb;
+      try {
+        pb = Gdk::Pixbuf::create_from_file(filename);
+      }
+      catch(Glib::FileError  &err) {
+        logEvent("Error loading smile image " + filename + ": " + err.what(), SEVERITY_WARNING);
+      }
+      catch(Gdk::PixbufError &err) {
+        logEvent("Error loading smile image " + filename + ": " + err.what(), SEVERITY_WARNING);
+      }
+      if(pb) {
+        smiles[keys[i]] = pb;
+      }
+    }
+  }
 }
 
 /*
@@ -248,6 +284,15 @@ Glib::RefPtr<Gdk::Pixbuf> Application::getStatusImage(guint32 statusCode) {
   }
   else {
     result = images[STATUS_UNDETERMINATED];
+  }
+  return result;
+}
+
+Glib::RefPtr<Gdk::Pixbuf> Application::getSmileImage(Glib::ustring smileId) {
+  logEvent("Application::getSmileImage()", SEVERITY_DEBUG);
+  Glib::RefPtr<Gdk::Pixbuf> result;
+  if(smiles[smileId]) {
+    result = smiles[smileId];
   }
   return result;
 }
