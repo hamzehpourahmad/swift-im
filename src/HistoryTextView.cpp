@@ -1,7 +1,7 @@
 /*
  *      HistoryTextView.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -33,26 +33,28 @@ using namespace Swift;
 
 HistoryTextView::HistoryTextView() {
   appInstance->logEvent("HistoryTextView::HistoryTextView()", SEVERITY_DEBUG);
-  tagTable = Gtk::TextBuffer::TagTable::create();
-  buffer = Gtk::TextBuffer::create(tagTable);
-  set_buffer(buffer);
-  ownTag = Gtk::TextBuffer::Tag::create();
-  ownTag->property_foreground_set() = true;
-  ownTag->property_foreground() = "#0000FF";
-  ownTag->property_weight() = Pango::WEIGHT_BOLD;
-  fromTag = Gtk::TextBuffer::Tag::create();
-  fromTag->property_foreground_set() = true;
-  fromTag->property_foreground() = "#FF0000";
-  fromTag->property_weight() = Pango::WEIGHT_BOLD;
-  underlinedTag = Gtk::TextBuffer::Tag::create();
-  underlinedTag->property_underline() = Pango::UNDERLINE_ERROR;
-  timeTag = Gtk::TextBuffer::Tag::create();
-  timeTag->property_foreground_set() = true;
-  timeTag->property_foreground() = "#7F7F7F";
-  tagTable->add(ownTag);
-  tagTable->add(fromTag);
-  tagTable->add(timeTag);
-  tagTable->add(underlinedTag);
+  // get default buffer
+  buffer = get_buffer();
+
+  // creating tags
+  Glib::RefPtr<Gtk::TextBuffer::Tag> refTag;
+
+  refTag = buffer->create_tag("myName");
+  refTag->set_property("foreground_set", true);
+  refTag->set_property("foreground", Glib::ustring("#0000FF"));
+  refTag->set_property("weight", Pango::WEIGHT_BOLD);
+
+  refTag = buffer->create_tag("companionName");
+  refTag->set_property("foreground_set", true);
+  refTag->set_property("foreground", Glib::ustring("#FF0000"));
+  refTag->set_property("weight", Pango::WEIGHT_BOLD);
+
+  refTag = buffer->create_tag("underline");
+  refTag->set_property("underline", Pango::UNDERLINE_ERROR);
+
+  refTag = buffer->create_tag("time");
+  refTag->set_property("foreground_set", true);
+  refTag->set_property("foreground", Glib::ustring("#7F7F7F"));
   set_accepts_tab(false);
 }
 
@@ -62,13 +64,11 @@ Glib::ustring HistoryTextView::getFormattedTime() {
   time_t st;
   time(&st);
   guint sz = strftime(dtbuf, sizeof(dtbuf), "%c", localtime (&st));
-  Glib::ustring result;
-  result = dtbuf;
-  return result;
+  return Glib::ustring(dtbuf);
 }
 
 void HistoryTextView::insertTime() {
-  buffer->insert_with_tag(buffer->end(), getFormattedTime() + "  ", timeTag);
+  buffer->insert_with_tag(buffer->end(), getFormattedTime() + "  ", "time");
 }
 
 void HistoryTextView::newLine() {
@@ -81,10 +81,10 @@ void HistoryTextView::addOwnMessage(guint32 messageId, Glib::ustring body) {
   newMessage.beginMark = buffer->create_mark(buffer->end());
   newMessage.endMark = buffer->create_mark(buffer->end());
   insertTime();
-  buffer->insert_with_tag(buffer->end(), appInstance->mUser->getNickname() + ": ", ownTag);
+  buffer->insert_with_tag(buffer->end(), appInstance->mUser->getNickname() + ": ", "myName");
   buffer->move_mark(newMessage.beginMark, buffer->end());
-  buffer->move_mark(newMessage.endMark, addMessage(body, true));
-  newLine();
+  addMessage(body, true);
+  buffer->move_mark(newMessage.endMark, buffer->end());
   history[messageId] = newMessage;
 }
 
@@ -96,27 +96,30 @@ void HistoryTextView::addReceivedMessage(Glib::ustring from, Glib::ustring body)
     author = c.getNickname();
   }
   insertTime();
-  buffer->insert_with_tag(buffer->end(), author + ": ", fromTag);
+  buffer->insert_with_tag(buffer->end(), author + ": ", "companionName");
   addMessage(body, false);
-  newLine();
 }
 
-Gtk::TextBuffer::iterator HistoryTextView::addMessage(Glib::ustring msg, bool me) {
+void HistoryTextView::addMessage(Glib::ustring msg, bool me) {
   appInstance->logEvent("HistoryTextView::addMessage()", SEVERITY_DEBUG);
+  msg += "\r\n";
   std::vector<TextPart> parts;
   if(scanSmiles(msg, &parts)) {
     for(gint i = 0; i < parts.size(); i++) {
       bool insertText = true;
       if(parts[i].smile) {
-        Glib::RefPtr<Gdk::Pixbuf> smileImg = appInstance->getSmileImage(parts[i].text);
-        if(smileImg) {
-          buffer->insert_pixbuf(buffer->end(), smileImg);
+        Glib::RefPtr<Gdk::PixbufAnimation> smilePba = appInstance->getSmileImage(parts[i].text);
+        if(smilePba) {
+          Gtk::Image* smileImg = manage(new Gtk::Image(smilePba));
+          Glib::RefPtr<Gtk::TextChildAnchor> refAnchor = buffer->create_child_anchor(buffer->end());
+          add_child_at_anchor(*smileImg, refAnchor);
+          smileImg->show_all();
           insertText = false;
         }
       }
       if(insertText) {
         if(me) {
-          buffer->insert_with_tag(buffer->end(), parts[i].text, underlinedTag);
+          buffer->insert_with_tag(buffer->end(), parts[i].text, "underline");
         }
         else {
           buffer->insert(buffer->end(), parts[i].text);
@@ -126,15 +129,12 @@ Gtk::TextBuffer::iterator HistoryTextView::addMessage(Glib::ustring msg, bool me
   }
   else {
     if(me) {
-      buffer->insert_with_tag(buffer->end(), msg, underlinedTag);
+      buffer->insert_with_tag(buffer->end(), msg, "underline");
     }
     else {
       buffer->insert(buffer->end(), msg);
     }
   }
-  Gtk::TextBuffer::iterator result = buffer->end();
-  newLine();
-  return result;
 }
 
 void HistoryTextView::confirmMessage(guint32 messageId) {
@@ -149,7 +149,7 @@ void HistoryTextView::rejectMessage(guint32 messageId, Glib::ustring reason) {
   appInstance->logEvent("HistoryTextView::rejectMessage()", SEVERITY_DEBUG);
   if(history[messageId].beginMark) {
     Glib::ustring message = buffer->get_text(history[messageId].beginMark->get_iter(), history[messageId].endMark->get_iter());
-    buffer->insert_with_tag(buffer->end(), ustring::compose(_("Maybe your message: \n%1\nwas not delivered. Server answer: %2"), message, reason), underlinedTag);
+    buffer->insert_with_tag(buffer->end(), ustring::compose(_("Maybe your message: \n%1\nwas not delivered. Server answer: %2"), message, reason), "underline");
     newLine();
   }
 }

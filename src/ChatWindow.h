@@ -1,7 +1,7 @@
 /*
  *      ChatWindow.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 /*
  * Represents chat window.
  */
- 
+
 namespace Swift {
   class ChatWindow;
 };
@@ -41,10 +41,10 @@ namespace Swift {
       ChatWindow(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade);
       ChatTabs* chatTabs;
       Gtk::Button* sendButton;
-      
+
     private:
       MessageQueue mMessageQueue;
-    
+
     protected:
       // signal handlers
       // GUI signals
@@ -52,7 +52,7 @@ namespace Swift {
       void sendButtonOnClicked();
       void onHide();
       bool onWindowStateEvent(GdkEventWindowState* event);
-      
+
       // mrim signals
       bool onMessageSendTimeout(guint32 messageId);
       void onMessageStatus(guint32 messageId, guint32 status);

@@ -3,19 +3,22 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Swift-IM-0.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-16 18:06+0600\n"
-"PO-Revision-Date: 2009-09-15 21:37+0600\n"
-"Last-Translator: Кожаев Галымжан <kozhayev@gmail.com>\n"
+"POT-Creation-Date: 2009-09-24 15:42+0600\n"
+"PO-Revision-Date: 2009-09-24 15:43+0600\n"
+"Last-Translator: Галымжан Кожаев <kozhayev@gmail.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
-#: ../src/ChatTabs.cpp:299
+#: ../src/ChatTabs.cpp:313
 msgid "%1 is typing a message"
 msgstr "%1 пишет вам сообщение"
 
@@ -27,11 +30,11 @@ msgstr "О Swift-IM"
 msgid "Authorization"
 msgstr "Авторизация"
 
-#: ../src/MrimUtils.cpp:37
+#: ../src/MrimUtils.cpp:36
 msgid "Away"
 msgstr "Отошел"
 
-#: ../src/LoginDialog.cpp:55
+#: ../src/LoginDialog.cpp:70
 msgid "Cannot establish connection to server\n"
 msgstr "Не могу установить соединение с сервером\n"
 
@@ -39,7 +42,7 @@ msgstr "Не могу установить соединение с сервер�
 msgid "Check your connection status"
 msgstr "Проверьте состояние вашего подключения"
 
-#: ../src/LoginDialog.cpp:55 ../src/MrimConnection.cpp:251
+#: ../src/LoginDialog.cpp:70 ../src/MrimConnection.cpp:251
 msgid "Connection error"
 msgstr "Ошибка соединения"
 
@@ -47,7 +50,7 @@ msgstr "Ошибка соединения"
 msgid "Connection to server has lost"
 msgstr "Соединение с сервером было сброшено"
 
-#: ../src/AboutDialog.cpp:53
+#: ../src/AboutDialog.cpp:56
 msgid "Cross-platform IM client for Mail.ru"
 msgstr "Кроссплатформенный клиент мгновенных сообщений для Mail.ru"
 
@@ -55,25 +58,25 @@ msgstr "Кроссплатформенный клиент мгновенных �
 msgid "E-mail:"
 msgstr "E-mail:"
 
-#: ../src/LoginDialog.cpp:55
+#: ../src/LoginDialog.cpp:70
 msgid "I can't connect to server. Are you really connected to the Internet?"
 msgstr ""
 "Не могу установить соединение с сервером. Вы действительно подключены к "
 "Интернету?"
 
-#: ../src/AboutDialog.cpp:57 ../swift-im/ui.glade.h:4
+#: ../src/AboutDialog.cpp:72 ../swift-im/ui.glade.h:4
 msgid "Information"
 msgstr "Информация"
 
-#: ../src/MrimUtils.cpp:49
+#: ../src/MrimUtils.cpp:48
 msgid "Internal server error"
 msgstr "Внутренняя ошибка сервера"
 
-#: ../src/MrimUtils.cpp:30
+#: ../src/MrimUtils.cpp:29
 msgid "Invisible"
 msgstr "Невидим"
 
-#: ../src/AboutDialog.cpp:58 ../swift-im/ui.glade.h:5
+#: ../src/AboutDialog.cpp:73 ../swift-im/ui.glade.h:5
 msgid "License"
 msgstr "Лицензия"
 
@@ -85,7 +88,11 @@ msgstr "Ошибка авторизации"
 msgid "Login unsuccessfull\n"
 msgstr "Не удалось авторизоваться\n"
 
-#: ../src/HistoryTextView.cpp:113
+#: ../src/AboutDialog.cpp:65
+msgid "Logo design"
+msgstr "Дизайн логотипа"
+
+#: ../src/HistoryTextView.cpp:152
 msgid ""
 "Maybe your message: \n"
 "%1\n"
@@ -95,11 +102,11 @@ msgstr ""
 "%1\n"
 "не было доставлено. Ответ сервера: %2"
 
-#: ../src/MrimUtils.cpp:47
+#: ../src/MrimUtils.cpp:46
 msgid "Message delivered"
 msgstr "Сообщение доставлено"
 
-#: ../src/MrimUtils.cpp:55
+#: ../src/MrimUtils.cpp:54
 msgid "Message size exceeded limits"
 msgstr "Размер сообщения превышает лимиты"
 
@@ -111,17 +118,25 @@ msgstr "Непрочитанных писем: %1"
 msgid "Nickname"
 msgstr "Ник"
 
-#: ../src/MrimUtils.cpp:33
+#: ../src/MrimUtils.cpp:32
 msgid "Offline"
 msgstr "Не в сети"
 
-#: ../src/MrimUtils.cpp:35
+#: ../src/MrimUtils.cpp:34
 msgid "Online"
 msgstr "В сети"
 
 #: ../swift-im/ui.glade.h:6
-msgid "Password"
-msgstr "Пароль"
+msgid "Password:"
+msgstr "Пароль:"
+
+#: ../src/AboutDialog.cpp:64
+msgid "People:"
+msgstr "Люди:"
+
+#: ../src/AboutDialog.cpp:66
+msgid "Projects:"
+msgstr "Проекты:"
 
 #: ../src/MrimLoggedUser.cpp:128
 msgid ""
@@ -135,11 +150,11 @@ msgstr ""
 msgid "Reason: \n"
 msgstr "Причина: \n"
 
-#: ../src/MrimUtils.cpp:51
+#: ../src/MrimUtils.cpp:50
 msgid "Recipient user doesn't exist"
 msgstr "Пользователь-получатель не существует"
 
-#: ../src/MrimUtils.cpp:57
+#: ../src/MrimUtils.cpp:56
 msgid ""
 "Recipient user is offline and his mailbox settings don't allow offline "
 "messages"
@@ -147,7 +162,7 @@ msgstr ""
 "Пользователь-получатель сейчас не в сети и настройки его почтового ящика не "
 "позволяют хранить оффлайн сообщения"
 
-#: ../src/MrimUtils.cpp:53
+#: ../src/MrimUtils.cpp:52
 msgid ""
 "Recipient user is offline and message is too large to put it into mailbox"
 msgstr ""
@@ -162,15 +177,19 @@ msgstr "Отправить"
 msgid "Status"
 msgstr "Статус"
 
-#: ../src/ChatWindow.cpp:104
+#: ../src/AboutDialog.cpp:74 ../swift-im/ui.glade.h:8
+msgid "Thanks"
+msgstr "Благодарности"
+
+#: ../src/ChatWindow.cpp:105
 msgid "Timeout period expired"
 msgstr "Таймаут истек"
 
-#: ../src/MrimUtils.cpp:39
+#: ../src/MrimUtils.cpp:38
 msgid "Undeterminated"
 msgstr "Не определен"
 
-#: ../src/MrimUtils.cpp:41 ../src/MrimUtils.cpp:59
+#: ../src/MrimUtils.cpp:40 ../src/MrimUtils.cpp:58
 msgid "Unknown"
 msgstr "Неизвестный"
 
@@ -178,29 +197,29 @@ msgstr "Неизвестный"
 msgid "You are logged out."
 msgstr "Вы вышли."
 
-#: ../swift-im/ui.glade.h:8
+#: ../swift-im/ui.glade.h:9
 msgid "You are now:"
 msgstr "Сейчас вы:"
 
-#: ../swift-im/ui.glade.h:9
+#: ../swift-im/ui.glade.h:10
 msgid "_File"
 msgstr "_Файл"
 
-#: ../swift-im/ui.glade.h:10
+#: ../swift-im/ui.glade.h:11
 msgid "_Help"
 msgstr "_Справка"
 
-#: ../swift-im/ui.glade.h:11
-msgid "gtk-close"
-msgstr ""
-
 #: ../swift-im/ui.glade.h:12
-msgid "gtk-ok"
-msgstr ""
+msgid "gtk-close"
+msgstr "gtk-close"
 
 #: ../swift-im/ui.glade.h:13
+msgid "gtk-ok"
+msgstr "gtk-ok"
+
+#: ../swift-im/ui.glade.h:14
 msgid "gtk-undo"
-msgstr ""
+msgstr "gtk-undo"
 
 #~ msgid "sample message"
 #~ msgstr "мессага"

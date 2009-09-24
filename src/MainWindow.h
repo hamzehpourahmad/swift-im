@@ -1,7 +1,7 @@
 /*
  *      MainWindow.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ namespace Swift {
       // GUI signals
       void menuItemExitOnActivate();
       void menuItemAboutOnActivate();
-      
+
       // mrim signals
       void onUserInfoReceive(UserInfo ui);
   };

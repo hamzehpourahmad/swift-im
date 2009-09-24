@@ -1,7 +1,7 @@
 /*
  *      AboutDialog.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ namespace Swift {
 };
 
 #include <gtkmm/dialog.h>
+#include <gtkmm/image.h>
+#include <gtkmm/textview.h>
 #include <libglademm.h>
 
 namespace Swift {
@@ -33,8 +35,10 @@ namespace Swift {
       AboutDialog(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade);
 
     private:
-      Gtk::Label *title, *link, *description, *caption1, *caption2;
+      Gtk::Label *title, *link, *description, *caption1, *caption2, *caption3;
       Gtk::Button *closeBtn, *linkBtn;
+      Gtk::Image *logoImage;
+      Gtk::TextView* thanksTV;
     protected:
       void onCloseClicked();
       void onLinkClicked();

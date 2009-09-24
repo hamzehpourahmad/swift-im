@@ -1,7 +1,7 @@
 /*
  *      Application.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -233,7 +233,7 @@ void Application::loadResources() {
     }
     parts.pop_back();
   }
-  
+
   // Loading smiles
   Glib::KeyFile smilesThemeFile;
   bool wasError = false;
@@ -251,12 +251,11 @@ void Application::loadResources() {
   if(!wasError) {
     std::vector<Glib::ustring> keys = smilesThemeFile.get_keys("smiles");
     Glib::ustring smilesDir = getVariable("SWIFTIM_DATA_DIR") + G_DIR_SEPARATOR + "img" + G_DIR_SEPARATOR + "smiles" + G_DIR_SEPARATOR;
-    //logEvent("Smiles dir: " + smilesDir, SEVERITY_DEBUG);
     for(gint i = 0; i < keys.size(); i++) {
       Glib::ustring filename = smilesDir + smilesThemeFile.get_string("smiles", keys[i]);
-      Glib::RefPtr<Gdk::Pixbuf> pb;
+      Glib::RefPtr<Gdk::PixbufAnimation> pba;
       try {
-        pb = Gdk::Pixbuf::create_from_file(filename);
+        pba = Gdk::PixbufAnimation::create_from_file(filename);
       }
       catch(Glib::FileError  &err) {
         logEvent("Error loading smile image " + filename + ": " + err.what(), SEVERITY_WARNING);
@@ -264,8 +263,8 @@ void Application::loadResources() {
       catch(Gdk::PixbufError &err) {
         logEvent("Error loading smile image " + filename + ": " + err.what(), SEVERITY_WARNING);
       }
-      if(pb) {
-        smiles[keys[i]] = pb;
+      if(pba) {
+        smiles[keys[i]] = pba;
       }
     }
   }
@@ -288,9 +287,9 @@ Glib::RefPtr<Gdk::Pixbuf> Application::getStatusImage(guint32 statusCode) {
   return result;
 }
 
-Glib::RefPtr<Gdk::Pixbuf> Application::getSmileImage(Glib::ustring smileId) {
+Glib::RefPtr<Gdk::PixbufAnimation> Application::getSmileImage(Glib::ustring smileId) {
   logEvent("Application::getSmileImage()", SEVERITY_DEBUG);
-  Glib::RefPtr<Gdk::Pixbuf> result;
+  Glib::RefPtr<Gdk::PixbufAnimation> result;
   if(smiles[smileId]) {
     result = smiles[smileId];
   }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-16 18:06+0600\n"
+"POT-Creation-Date: 2009-09-24 15:42+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,23 +16,39 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/AboutDialog.cpp:53
+#: ../src/AboutDialog.cpp:56
 msgid "Cross-platform IM client for Mail.ru"
 msgstr ""
 
-#: ../src/AboutDialog.cpp:57 ../swift-im/ui.glade.h:4
+#: ../src/AboutDialog.cpp:64
+msgid "People:"
+msgstr ""
+
+#: ../src/AboutDialog.cpp:65
+msgid "Logo design"
+msgstr ""
+
+#: ../src/AboutDialog.cpp:66
+msgid "Projects:"
+msgstr ""
+
+#: ../src/AboutDialog.cpp:72 ../swift-im/ui.glade.h:4
 msgid "Information"
 msgstr ""
 
-#: ../src/AboutDialog.cpp:58 ../swift-im/ui.glade.h:5
+#: ../src/AboutDialog.cpp:73 ../swift-im/ui.glade.h:5
 msgid "License"
 msgstr ""
 
-#: ../src/ChatTabs.cpp:299
+#: ../src/AboutDialog.cpp:74 ../swift-im/ui.glade.h:8
+msgid "Thanks"
+msgstr ""
+
+#: ../src/ChatTabs.cpp:313
 msgid "%1 is typing a message"
 msgstr ""
 
-#: ../src/ChatWindow.cpp:104
+#: ../src/ChatWindow.cpp:105
 msgid "Timeout period expired"
 msgstr ""
 
@@ -44,22 +60,22 @@ msgstr ""
 msgid "Nickname"
 msgstr ""
 
-#: ../src/HistoryTextView.cpp:113
+#: ../src/HistoryTextView.cpp:152
 msgid ""
 "Maybe your message: \n"
 "%1\n"
 "was not delivered. Server answer: %2"
 msgstr ""
 
-#: ../src/LoginDialog.cpp:55 ../src/MrimConnection.cpp:251
+#: ../src/LoginDialog.cpp:70 ../src/MrimConnection.cpp:251
 msgid "Connection error"
 msgstr ""
 
-#: ../src/LoginDialog.cpp:55
+#: ../src/LoginDialog.cpp:70
 msgid "Cannot establish connection to server\n"
 msgstr ""
 
-#: ../src/LoginDialog.cpp:55
+#: ../src/LoginDialog.cpp:70
 msgid "I can't connect to server. Are you really connected to the Internet?"
 msgstr ""
 
@@ -97,52 +113,52 @@ msgstr ""
 msgid "You are logged out."
 msgstr ""
 
-#: ../src/MrimUtils.cpp:30
+#: ../src/MrimUtils.cpp:29
 msgid "Invisible"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:33
+#: ../src/MrimUtils.cpp:32
 msgid "Offline"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:35
+#: ../src/MrimUtils.cpp:34
 msgid "Online"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:37
+#: ../src/MrimUtils.cpp:36
 msgid "Away"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:39
+#: ../src/MrimUtils.cpp:38
 msgid "Undeterminated"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:41 ../src/MrimUtils.cpp:59
+#: ../src/MrimUtils.cpp:40 ../src/MrimUtils.cpp:58
 msgid "Unknown"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:47
+#: ../src/MrimUtils.cpp:46
 msgid "Message delivered"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:49
+#: ../src/MrimUtils.cpp:48
 msgid "Internal server error"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:51
+#: ../src/MrimUtils.cpp:50
 msgid "Recipient user doesn't exist"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:53
+#: ../src/MrimUtils.cpp:52
 msgid ""
 "Recipient user is offline and message is too large to put it into mailbox"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:55
+#: ../src/MrimUtils.cpp:54
 msgid "Message size exceeded limits"
 msgstr ""
 
-#: ../src/MrimUtils.cpp:57
+#: ../src/MrimUtils.cpp:56
 msgid ""
 "Recipient user is offline and his mailbox settings don't allow offline "
 "messages"
@@ -161,33 +177,33 @@ msgid "E-mail:"
 msgstr ""
 
 #: ../swift-im/ui.glade.h:6
-msgid "Password"
+msgid "Password:"
 msgstr ""
 
 #: ../swift-im/ui.glade.h:7
 msgid "Send"
 msgstr ""
 
-#: ../swift-im/ui.glade.h:8
+#: ../swift-im/ui.glade.h:9
 msgid "You are now:"
 msgstr ""
 
-#: ../swift-im/ui.glade.h:9
+#: ../swift-im/ui.glade.h:10
 msgid "_File"
 msgstr ""
 
-#: ../swift-im/ui.glade.h:10
+#: ../swift-im/ui.glade.h:11
 msgid "_Help"
 msgstr ""
 
-#: ../swift-im/ui.glade.h:11
+#: ../swift-im/ui.glade.h:12
 msgid "gtk-close"
 msgstr ""
 
-#: ../swift-im/ui.glade.h:12
+#: ../swift-im/ui.glade.h:13
 msgid "gtk-ok"
 msgstr ""
 
-#: ../swift-im/ui.glade.h:13
+#: ../swift-im/ui.glade.h:14
 msgid "gtk-undo"
 msgstr ""
