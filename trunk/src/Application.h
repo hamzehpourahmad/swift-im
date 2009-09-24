@@ -1,7 +1,7 @@
 /*
  *      Application.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ namespace Swift {
       void logEvent(Glib::ustring message, LogSeverity svty);
       static Application* getInstance();
       Glib::RefPtr<Gdk::Pixbuf> getStatusImage(guint32 statusCode);
-      Glib::RefPtr<Gdk::Pixbuf> getSmileImage(Glib::ustring smileId);
+      Glib::RefPtr<Gdk::PixbufAnimation> getSmileImage(Glib::ustring smileId);
       MainWindow* mainWindow;
       LoginDialog* loginDialog;
       ChatWindow* chatWindow;
@@ -85,7 +85,7 @@ namespace Swift {
     private:
       std::map<std::string, Glib::ustring> variables;
       std::map <guint32, Glib::RefPtr<Gdk::Pixbuf> > images;
-      std::map <Glib::ustring, Glib::RefPtr<Gdk::Pixbuf> > smiles;
+      std::map <Glib::ustring, Glib::RefPtr<Gdk::PixbufAnimation> > smiles;
       Glib::RefPtr<Glib::IOChannel> logfile;
       Glib::ustring getSeverityStr(LogSeverity svty);
       void initLocale();

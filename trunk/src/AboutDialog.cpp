@@ -1,7 +1,7 @@
 /*
  *      AboutDialog.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -33,14 +33,17 @@ AboutDialog::AboutDialog(BaseObjectType* baseObject, const RefPtr<Gnome::Glade::
   appInstance->xml->get_widget("description", description);
   appInstance->xml->get_widget("caption1", caption1);
   appInstance->xml->get_widget("caption2", caption2);
+  appInstance->xml->get_widget("caption3", caption3);
   appInstance->xml->get_widget("linkButton", linkBtn);
   appInstance->xml->get_widget("closeButton", closeBtn);
-
+  appInstance->xml->get_widget("logoImage", logoImage);
+  appInstance->xml->get_widget("thanksTV", thanksTV);
   // setting properties
   title->set_use_markup(true);
   title->set_label("<span font=\"16\" weight=\"bold\">" + get_application_name() + " " + appInstance->getVersion() + "</span>");
   title->set_alignment(Gtk::ALIGN_CENTER);
   title->set_line_wrap(true);
+  logoImage->set(appInstance->getVariable("SWIFTIM_DATA_DIR") + G_DIR_SEPARATOR + "img" + G_DIR_SEPARATOR + "logo.png");
   linkBtn->set_relief(Gtk::RELIEF_NONE);
   linkBtn->set_focus_on_click(false);
   link->set_use_markup(true);
@@ -51,11 +54,24 @@ AboutDialog::AboutDialog(BaseObjectType* baseObject, const RefPtr<Gnome::Glade::
   description->set_line_wrap(true);
   description->set_label(
   "<span weight=\"bold\">" + ustring(_("Cross-platform IM client for Mail.ru")) + "</span>\n\n"
-  "Copyright (c) 2009 Кожаев Галымжан\n"
+  "Copyright (c) 2009 Галымжан Кожаев\n"
   "&lt;kozhayev(at)gmail(dot)com&gt;"
+  );
+  RefPtr<Gtk::TextBuffer::Tag> refTag;
+  RefPtr<Gtk::TextBuffer> buffer = thanksTV->get_buffer();
+  refTag = buffer->create_tag("bold");
+  refTag->set_property("weight", Pango::WEIGHT_BOLD);
+  buffer->insert_with_tag(buffer->end(), ustring(_("People:")) + "\r\n", "bold");
+  buffer->insert(buffer->end(), "Stepan Zubashev <faiwer(at)gmail(dot)com>: " + ustring(_("Logo design")) + "\r\n\r\n");
+  buffer->insert_with_tag(buffer->end(), ustring(_("Projects:")) + "\r\n", "bold");
+  buffer->insert(buffer->end(),
+    "GTK+ toolkit (http://www.gtk.org)" "\r\n"
+    "GTKMM project (http://www.gtkmm.org)" "\r\n"
+    "CodeBlocks IDE (http://www.codeblocks.org)"
   );
   caption1->set_label(_("Information"));
   caption2->set_label(_("License"));
+  caption3->set_label(_("Thanks"));
 
   // connecting signals
   closeBtn->signal_clicked().connect(sigc::mem_fun(*this, &AboutDialog::onCloseClicked));

@@ -1,7 +1,7 @@
 /*
  *      ChatTabs.cpp - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -146,7 +146,7 @@ gint ChatTabs::createTab(ustring contactAddress) {
   Gtk::Image* avatar = manage(new Gtk::Image(c.getAvatar()));
   Gtk::ScrolledWindow* historyTextScroll = manage(new Gtk::ScrolledWindow());
   Gtk::ScrolledWindow* messageTextScroll = manage(new Gtk::ScrolledWindow());
-  
+
   // if tab was created once we must obtain that tab index
   // otherwise we will have two ChatTabs structures which will
   // point to the same widgets, but child widget pointers will be different
@@ -166,7 +166,7 @@ gint ChatTabs::createTab(ustring contactAddress) {
     notifyLabel = new Gtk::Label();
     widgetsCreated[contactAddress] = true;
   }
-    
+
   /*
    * 2. Setting widget properties
    */
@@ -206,7 +206,7 @@ gint ChatTabs::createTab(ustring contactAddress) {
   historyTextView->set_left_margin(DEFAULT_TEXTVIEW_MARGIN);
   messageTextView->set_right_margin(DEFAULT_TEXTVIEW_MARGIN);
   messageTextView->set_left_margin(DEFAULT_TEXTVIEW_MARGIN);
-  
+
   // 3. Packing widgets
 
   // packing tab label into hbox
@@ -256,12 +256,12 @@ gint ChatTabs::createTab(ustring contactAddress) {
     tabs[newTabIndex] = newTab;
   }
   isCreated[contactAddress] = true;
-  
+
   // 7. Connecting signals
   // closeButton's signal with extra argument
   closeButton->signal_clicked().connect(sigc::bind<gint>(sigc::mem_fun(*this, &ChatTabs::onCloseTabClicked), newTabIndex));
   historyTextScroll->get_vadjustment()->signal_changed().connect(sigc::bind<Gtk::Adjustment*>(sigc::mem_fun(*this, &ChatTabs::onHistoryTextScrollChanged), historyTextScroll->get_vadjustment()));
-  
+
   return result;
 }
 

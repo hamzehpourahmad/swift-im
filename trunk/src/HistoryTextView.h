@@ -1,7 +1,7 @@
 /*
  *      HistoryTextView.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -49,10 +49,8 @@ namespace Swift {
       Glib::ustring getFormattedTime();
     private:
       Glib::RefPtr<Gtk::TextBuffer> buffer;
-      Glib::RefPtr<Gtk::TextBuffer::TagTable> tagTable;
-      Glib::RefPtr<Gtk::TextBuffer::Tag> ownTag, fromTag, underlinedTag, timeTag;
       MessageBoundsList history;
-      Gtk::TextBuffer::iterator addMessage(Glib::ustring msg, bool me);
+      void addMessage(Glib::ustring msg, bool me);
       void insertTime();
       void newLine();
       bool scanSmiles(Glib::ustring str, std::vector<TextPart> *textParts);

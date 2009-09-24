@@ -20,11 +20,13 @@ IF(WIN32)
   SET(CPACK_PACKAGE_VERSION 0.2)
   SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
   SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "Swift-IM")
-  
+
   # NSIS-specific settings
   SET(CPACK_NSIS_COMPRESSOR "/SOLID lzma")
-  SET(CPACK_PACKAGE_ICON "${CMAKE_BINARY_DIR}\\\\logo.bmp")
-  
+
+  # install-logo.bmp file must reside in the build directory, otherwise error will occur
+  SET(CPACK_PACKAGE_ICON "${CMAKE_BINARY_DIR}\\\\install-logo.bmp")
+
   # include CPack module
   INCLUDE(CPack)
 ENDIF(WIN32)
@@ -44,4 +46,4 @@ if(GETTEXT_FOUND AND NOT WIN32)
   ADD_DEPENDENCIES(swift-im translations)
 endif(GETTEXT_FOUND AND NOT WIN32)
 
-INSTALL(DIRECTORY swift-im/ DESTINATION share PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY swift-im DESTINATION share PATTERN ".svn" EXCLUDE)

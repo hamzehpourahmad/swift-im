@@ -1,5 +1,5 @@
 Swift-IM - Cross-platform IM client for Mail.ru
-Copyright (C) 2009 Кожаев Галымжан
+Copyright (C) 2009 Галымжан Кожаев
 -----------------------------------------------
 
 
@@ -27,7 +27,9 @@ Requirements
 For compiling Swift-IM yourself, you will need the gtkmm (>= 2.16.x) libraries
 and header files. You can find it at http://www.gtkmm.org/.
 Also you need, of course a C++ compiler and CMake (>= 2.6) build system.
-You can download CMake at http://www.cmake.org/.
+You can download CMake binaries at http://www.cmake.org/.
+For running Swift-IM gtkmm runtime libraries are required.
+Note that all packages must be installed with dependent packages of course.
 
 
 Installation

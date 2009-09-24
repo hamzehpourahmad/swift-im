@@ -1,7 +1,7 @@
 /*
  *      ChatTabs.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
- *      Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
+ *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ namespace Swift {
       gint getTab(gint pageNumber);
       ChatTab getNthTab(gint tabIndex);
       ChatTab getCurrentTab();
-    
+
     private:
       Tabs tabs;
       std::map <Glib::ustring, bool> isCreated, widgetsCreated;
