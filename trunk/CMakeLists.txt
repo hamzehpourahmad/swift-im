@@ -1,7 +1,7 @@
 # CMakeLists.txt - this file is part of Swift-IM, cross-platform IM client for Mail.ru
 # Copyright (c) 2009 Кожаев Галымжан <kozhayev(at)gmail(dot)com>
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 
 PROJECT(Swift-IM CXX)
 
@@ -16,12 +16,13 @@ IF(WIN32)
   SET(CPACK_PACKAGE_NAME "Swift-IM")
   SET(CPACK_GENERATOR "NSIS")
   SET(CPACK_PACKAGE_FILE_NAME "swift-im-0.2-setup")
-  SET(CPACK_SYSTEM_NAME "Win32")
   SET(CPACK_PACKAGE_VERSION 0.2)
   SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
+  SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Swift-IM")
   SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "Swift-IM")
 
   # NSIS-specific settings
+  SET(CPACK_PACKAGE_EXECUTABLES "swift-im;Swift-IM")
   SET(CPACK_NSIS_COMPRESSOR "/SOLID lzma")
 
   # install-logo.bmp file must reside in the build directory, otherwise error will occur
@@ -42,8 +43,8 @@ ADD_SUBDIRECTORY(src)
 #execute po/CMakeLists.txt
 ADD_SUBDIRECTORY(po)
 
-if(GETTEXT_FOUND AND NOT WIN32)
+if(GETTEXT_FOUND)
   ADD_DEPENDENCIES(swift-im translations)
-endif(GETTEXT_FOUND AND NOT WIN32)
+endif(GETTEXT_FOUND)
 
 INSTALL(DIRECTORY swift-im DESTINATION share PATTERN ".svn" EXCLUDE)
