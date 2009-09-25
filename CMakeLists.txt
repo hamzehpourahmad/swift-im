@@ -10,12 +10,12 @@ INCLUDE(FindPkgConfig)
 INCLUDE(FindGettext)
 INCLUDE(CheckIncludeFileCXX)
 
-IF(WIN32)
+IF(WIN32 AND BUILD_FOR_NSIS)
   # setting CPack settings for NSIS installer on Windows
   SET(CPACK_PACKAGE_VENDOR "")
   SET(CPACK_PACKAGE_NAME "Swift-IM")
   SET(CPACK_GENERATOR "NSIS")
-  SET(CPACK_PACKAGE_FILE_NAME "swift-im-0.2-setup")
+  SET(CPACK_PACKAGE_FILE_NAME "swift-im-0.2a-setup")
   SET(CPACK_PACKAGE_VERSION 0.2)
   SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
   SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Swift-IM")
@@ -27,10 +27,16 @@ IF(WIN32)
 
   # install-logo.bmp file must reside in the build directory, otherwise error will occur
   SET(CPACK_PACKAGE_ICON "${CMAKE_BINARY_DIR}\\\\install-logo.bmp")
+  
+  # redist/ directory with all gtkmm runtime dlls must reside in the build directory
+  INSTALL(DIRECTORY "${CMAKE_BINARY_DIR}/GTKMM-redist/etc/" DESTINATION etc)
+  INSTALL(DIRECTORY "${CMAKE_BINARY_DIR}/GTKMM-redist/redist/" DESTINATION bin)
+  INSTALL(DIRECTORY "${CMAKE_BINARY_DIR}/GTKMM-redist/lib/" DESTINATION lib)
+  INSTALL(DIRECTORY "${CMAKE_BINARY_DIR}/GTKMM-redist/share/" DESTINATION share)
 
   # include CPack module
   INCLUDE(CPack)
-ENDIF(WIN32)
+ENDIF(WIN32 AND BUILD_FOR_NSIS)
 
 if(CMAKE_BUILD_TYPE STREQUAL "")
   # use Release as default build type
