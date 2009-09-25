@@ -30,6 +30,10 @@ namespace Swift {
   class Application;
 };
 
+#ifdef G_OS_WIN32
+  #include <windows.h>
+#endif
+
 #include <string>
 #include <map>
 
@@ -83,14 +87,18 @@ namespace Swift {
       Glib::ustring getVariable(std::string key);
 
     private:
-      std::map<std::string, Glib::ustring> variables;
-      std::map <guint32, Glib::RefPtr<Gdk::Pixbuf> > images;
-      std::map <Glib::ustring, Glib::RefPtr<Gdk::PixbufAnimation> > smiles;
+      Glib::ustring getInstallPrefix();
       Glib::RefPtr<Glib::IOChannel> logfile;
       Glib::ustring getSeverityStr(LogSeverity svty);
       void initLocale();
       void initVariables();
       void loadResources();
+      std::map<std::string, Glib::ustring> variables;
+      std::map <guint32, Glib::RefPtr<Gdk::Pixbuf> > images;
+      std::map <Glib::ustring, Glib::RefPtr<Gdk::PixbufAnimation> > smiles;
+      #ifdef G_OS_WIN32
+        gchar* _getInstallPrefixWin();
+      #endif
   };
 };
 

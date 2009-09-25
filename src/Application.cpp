@@ -130,16 +130,10 @@ void Application::showMessage(Glib::ustring title, Glib::ustring message, Glib::
 
 /*
  * Initializes application variables.
- * INSTALL_PREFIX is define at compile-time.
  * Perhaps in future, variables will be loaded from INI-file.
  */
 void Application::initVariables() {
-  Glib::ustring prefix = INSTALL_PREFIX;
-  // removing trailing slashes ('/' and '\')
-  while(!prefix.empty() && (prefix[prefix.length()-1] == '/' || prefix[prefix.length()-1] == '\\')) {
-    prefix.erase(prefix.length() - 1, 1);
-  }
-  variables["SWIFTIM_INSTALL_PREFIX"] = prefix;
+  variables["SWIFTIM_INSTALL_PREFIX"] = getInstallPrefix();
   variables["SWIFTIM_DATA_DIR"] = variables["SWIFTIM_INSTALL_PREFIX"] + G_DIR_SEPARATOR + "share" + G_DIR_SEPARATOR + "swift-im";
   variables["SWIFTIM_LOCALE_DIR"] = variables["SWIFTIM_INSTALL_PREFIX"] + G_DIR_SEPARATOR + "share" + G_DIR_SEPARATOR + "locale";
   variables["SWIFTIM_USER_DATA_DIR"] = Glib::get_user_data_dir() + G_DIR_SEPARATOR + "swift-im";
@@ -160,6 +154,65 @@ void Application::initVariables() {
   variables["ENDL"] = "\n";
 #endif
 }
+
+/*
+ * Tries to determine correct install prefix.
+ */
+Glib::ustring Application::getInstallPrefix() {
+  Glib::ustring result;
+#if defined G_OS_WIN32 && defined BUILD_FOR_NSIS
+  gchar* p = _getInstallPrefixWin();
+  if(p != NULL) {
+    result = Glib::ustring(p);
+    delete p;
+  }
+#else
+  result = Glib::ustring(INSTALL_PREFIX);
+#endif
+  if(result.empty()) {
+    result = Glib::get_current_dir() + G_DIR_SEPARATOR + "..";
+  }
+  // removing trailing slashes ('/' and '\')
+  while(!result.empty() && (result[result.length()-1] == '/' || result[result.length()-1] == '\\')) {
+    result.erase(result.length() - 1, 1);
+  }
+  return result;
+}
+
+#ifdef G_OS_WIN32
+/*
+ * Tries to read install prefix from windows registry.
+ * @return  pointer to string or NULL if error occurs.
+ * Returned pointer must be freed in case of success.
+ */
+gchar* Application::_getInstallPrefixWin() {
+  HKEY regKey;
+  LONG retVal;
+  gchar* buffer;
+  retVal = RegOpenKeyEx(HKEY_LOCAL_MACHINE, LPCTSTR("SOFTWARE\\Swift-IM"), 0, KEY_READ, &regKey);
+  if(retVal == ERROR_SUCCESS) {
+    DWORD len, type;
+    // Determine type and length of key value
+    retVal = RegQueryValueEx(regKey, "", NULL, &type, NULL, &len);
+    if(retVal == ERROR_SUCCESS) {
+      // Calculating size of buffer
+      size_t sz = len / sizeof(gchar);
+      
+      // Allocating memory for buffer
+      buffer = (gchar*) malloc(sz);
+      if(buffer != NULL) {
+        // Reading value
+        retVal = RegQueryValueEx(regKey, "", NULL, &type, (LPBYTE)buffer, &len);
+        if(retVal == ERROR_SUCCESS) {
+          return buffer;
+        }
+      }
+    }
+  }
+  // reaching this point means error
+  return NULL;
+}
+#endif
 
 Glib::ustring Application::getVariable(std::string key) {
   return variables[key];
