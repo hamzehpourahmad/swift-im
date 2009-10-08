@@ -85,6 +85,7 @@ Application::Application() {
   xml->get_widget_derived("loginDialog", loginDialog);
   xml->get_widget_derived("chatWindow", chatWindow);
   xml->get_widget_derived("aboutDialog", aboutDialog);
+  xml->get_widget_derived("smileDialog", smileDialog);
 }
 
 Application::~Application() {
@@ -102,6 +103,7 @@ Application::~Application() {
   delete loginDialog;
   delete chatWindow;
   delete aboutDialog;
+  delete smileDialog;
 }
 
 /*
@@ -197,7 +199,7 @@ gchar* Application::_getInstallPrefixWin() {
     if(retVal == ERROR_SUCCESS) {
       // Calculating size of buffer
       size_t sz = len / sizeof(gchar);
-      
+
       // Allocating memory for buffer
       buffer = (gchar*) malloc(sz);
       if(buffer != NULL) {
@@ -347,4 +349,8 @@ Glib::RefPtr<Gdk::PixbufAnimation> Application::getSmileImage(Glib::ustring smil
     result = smiles[smileId];
   }
   return result;
+}
+
+std::map <Glib::ustring, Glib::RefPtr<Gdk::PixbufAnimation> > Application::getSmilesAll() const {
+  return smiles;
 }

@@ -32,6 +32,7 @@ MrimConnection::MrimConnection() {
   mSock = 0;
 
   // connecting signal handlers
+  signal_connection_hangup().connect(sigc::mem_fun(*this, &MrimConnection::onConnectionHangup));
   appInstance->sigServer->signal_hello_ack().connect(sigc::mem_fun(*this, &MrimConnection::onHelloAck));
   appInstance->sigServer->signal_logout().connect(sigc::mem_fun(*this, &MrimConnection::onLogout));
   appInstance->sigServer->signal_connection_params().connect(sigc::mem_fun(*this, &MrimConnection::onHelloAck));
@@ -140,7 +141,6 @@ bool MrimConnection::connect() {
     return false;
   }
   if(mConnected) {
-    Glib::signal_io().connect(sigc::mem_fun(*this, &MrimConnection::connectionHangupCallback), mSock, Glib::IO_HUP);
     MrimPacket p(MRIM_CS_HELLO);
     p.send();
     // receive MRIM_CS_HELLO_ACK
@@ -205,7 +205,12 @@ guint32 MrimConnection::readLPS(Glib::ustring *buffer, Glib::ustring fromEncodin
 
 bool MrimConnection::listenCallback(Glib::IOCondition condition) {
   //appInstance->logEvent("MrimConnection::listenCallback()", SEVERITY_DEBUG);
-  if((condition & Glib::IO_IN) || (condition & Glib::IO_PRI)) {
+  if((condition & Glib::IO_HUP) != 0) {
+    appInstance->logEvent("Connection lost.", SEVERITY_WARNING);
+    signal_connection_hangup().emit();
+    appInstance->showMessage(_("Connection error"), _("Connection to server has lost"), _("Check your connection status"), Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
+  }
+  if(((condition & Glib::IO_IN) != 0) || ((condition & Glib::IO_PRI) != 0)) {
     // ready to read
     MrimPacket::receive();
   }
@@ -221,8 +226,7 @@ void MrimConnection::startListen() {
     #else
     channel = Glib::IOChannel::create_from_fd(mSock);
     #endif
-    //mListenConnection = Glib::signal_io().connect(sigc::mem_fun(*this, &MrimConnection::listenCallback), channel, Glib::IO_IN, G_PRIORITY_LOW);
-    mListenConnection = Glib::signal_io().connect(sigc::mem_fun(*this, &MrimConnection::listenCallback), channel, Glib::IO_IN, G_PRIORITY_LOW);
+    mListenConnection = Glib::signal_io().connect(sigc::mem_fun(*this, &MrimConnection::listenCallback), channel, Glib::IO_IN | Glib::IO_HUP, G_PRIORITY_LOW);
   }
 }
 
@@ -231,8 +235,8 @@ void MrimConnection::stopListen() {
   mListenConnection.disconnect();
 }
 
-void MrimConnection::disconnect() {
-  appInstance->logEvent("MrimConnection::disconnect()", SEVERITY_DEBUG);
+void MrimConnection::onConnectionHangup() {
+  appInstance->logEvent("MrimConnection::onConnectionHangup()", SEVERITY_DEBUG);
   mConnected = false;
   mCommandNumber = 1;
   stopListen();
@@ -242,15 +246,6 @@ void MrimConnection::disconnect() {
   #else
   close(mSock);
   #endif
-}
-
-bool MrimConnection::connectionHangupCallback(Glib::IOCondition condition) {
-  appInstance->logEvent("MrimConnection::connectionHangupCallback()", SEVERITY_DEBUG);
-  if(condition & Glib::IO_HUP) {
-    appInstance->logEvent("Connection lost.", SEVERITY_WARNING);
-    appInstance->showMessage(_("Connection error"), _("Connection to server has lost"), _("Check your connection status"), Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
-    disconnect();
-  }
 }
 
 gint MrimConnection::sendRawData(const char* data, guint length) {
@@ -353,4 +348,8 @@ guint32 MrimConnection::getPingPeriod() {
 void MrimConnection::onConnectionParamsReceive(guint32 pingPeriod) {
   appInstance->logEvent("MrimConnection::onConnectionParamsReceive()", SEVERITY_DEBUG);
   mPingPeriod = pingPeriod;
+}
+
+SignalConnectionHangup MrimConnection::signal_connection_hangup() {
+  return mSignalConnectionHangup;
 }

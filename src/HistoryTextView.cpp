@@ -83,7 +83,7 @@ void HistoryTextView::addOwnMessage(guint32 messageId, Glib::ustring body) {
   insertTime();
   buffer->insert_with_tag(buffer->end(), appInstance->mUser->getNickname() + ": ", "myName");
   buffer->move_mark(newMessage.beginMark, buffer->end());
-  addMessage(body, true);
+  addMessage(body, "underline");
   buffer->move_mark(newMessage.endMark, buffer->end());
   history[messageId] = newMessage;
 }
@@ -97,12 +97,12 @@ void HistoryTextView::addReceivedMessage(Glib::ustring from, Glib::ustring body)
   }
   insertTime();
   buffer->insert_with_tag(buffer->end(), author + ": ", "companionName");
-  addMessage(body, false);
+  addMessage(body);
 }
 
-void HistoryTextView::addMessage(Glib::ustring msg, bool me) {
+void HistoryTextView::addMessage(Glib::ustring msg, Glib::ustring tagName) {
   appInstance->logEvent("HistoryTextView::addMessage()", SEVERITY_DEBUG);
-  msg += "\r\n";
+  Glib::RefPtr<Gtk::TextMark> begin = buffer->create_mark(buffer->end());
   std::vector<TextPart> parts;
   if(scanSmiles(msg, &parts)) {
     for(gint i = 0; i < parts.size(); i++) {
@@ -118,23 +118,17 @@ void HistoryTextView::addMessage(Glib::ustring msg, bool me) {
         }
       }
       if(insertText) {
-        if(me) {
-          buffer->insert_with_tag(buffer->end(), parts[i].text, "underline");
-        }
-        else {
-          buffer->insert(buffer->end(), parts[i].text);
-        }
+        buffer->insert(buffer->end(), parts[i].text);
       }
     }
   }
   else {
-    if(me) {
-      buffer->insert_with_tag(buffer->end(), msg, "underline");
-    }
-    else {
-      buffer->insert(buffer->end(), msg);
-    }
+    buffer->insert(buffer->end(), msg);
   }
+  if(!tagName.empty()) {
+    buffer->apply_tag_by_name(tagName, begin->get_iter(), buffer->end());
+  }
+  buffer->insert(buffer->end(), "\r\n");
 }
 
 void HistoryTextView::confirmMessage(guint32 messageId) {
@@ -149,13 +143,12 @@ void HistoryTextView::rejectMessage(guint32 messageId, Glib::ustring reason) {
   appInstance->logEvent("HistoryTextView::rejectMessage()", SEVERITY_DEBUG);
   if(history[messageId].beginMark) {
     Glib::ustring message = buffer->get_text(history[messageId].beginMark->get_iter(), history[messageId].endMark->get_iter());
-    buffer->insert_with_tag(buffer->end(), ustring::compose(_("Maybe your message: \n%1\nwas not delivered. Server answer: %2"), message, reason), "underline");
-    newLine();
+    addMessage(ustring::compose(_("Maybe your message: \n%1\nwas not delivered. Server answer: %2"), message, reason), "underline");
   }
 }
 
 bool HistoryTextView::scanSmiles(Glib::ustring str, std::vector<TextPart> *textParts) {
-  const gchar MRIM_SMILES_REGEXP[] = "<###[0-9]+###img[0-9]+>|<SMILE>\\s*id\\s*=\\s*([0-9]+)\\s+alt\\s*=\\s*'.+?'\\s*</SMILE>";
+  const gchar MRIM_SMILES_REGEXP[] = "<###[0-9]+###img[0-9]+>|<SMILE>\\s*id\\s*=\\s*([0-9]+)\\s+alt\\s*=\\s*'.*?'\\s*</SMILE>";
   TextPart part;
   std::string rawStr = str.raw();
   GError* err = NULL;

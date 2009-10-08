@@ -17,6 +17,8 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <gtkmm/stock.h>
+
 #include "ChatWindow.h"
 #include "Application.h"
 #include "MrimUtils.h"
@@ -29,9 +31,15 @@ ChatWindow::ChatWindow(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Gla
   // get widgets
   appInstance->xml->get_widget_derived("chatTabs", chatTabs);
   appInstance->xml->get_widget("sendButton", sendButton);
+  appInstance->xml->get_widget("smileButton", smileButton);
+  appInstance->xml->get_widget("smileImage", smileImage);
+
+  smileImage->set(appInstance->getVariable("SWIFTIM_DATA_DIR") + G_DIR_SEPARATOR + "img" + G_DIR_SEPARATOR + "select-smile.png");
 
   // connect signal handlers
+  smileButton->signal_toggled().connect(sigc::mem_fun(*this, &ChatWindow::smileButtonToggled));
   sendButton->signal_clicked().connect(sigc::mem_fun(*this, &ChatWindow::sendButtonOnClicked));
+
   signal_hide().connect(sigc::mem_fun(*this, &ChatWindow::onHide));
   signal_key_press_event().connect(sigc::mem_fun(*this, &ChatWindow::onKeyPressEvent), false);
   signal_window_state_event().connect(sigc::mem_fun(*this, &ChatWindow::onWindowStateEvent), false);
@@ -46,14 +54,16 @@ void ChatWindow::sendButtonOnClicked() {
   appInstance->logEvent("ChatWindow::sendButtonOnClicked()", SEVERITY_DEBUG);
   ChatTab curTab = chatTabs->getCurrentTab();
   Glib::ustring address = curTab.address;
-  Glib::ustring message = curTab.messageText->get_buffer()->get_text();
+  //Glib::ustring message = curTab.messageText->get_buffer()->get_text();
+  Glib::ustring message = curTab.messageText->getCleanText();
+  printf("%s\n", message.c_str());
   if(!address.empty() && !message.empty()) {
     guint32 messageId;
     appInstance->mClient->sendMessage(0, address, message, " ", &messageId);
     // save message in message queue
     mMessageQueue[messageId] = address;
     curTab.historyText->addOwnMessage(messageId, message);
-    curTab.messageText->get_buffer()->set_text("");
+    curTab.messageText->cleanup();
     sigc::slot<bool> timeoutSlot = sigc::bind(sigc::mem_fun(*this, &ChatWindow::onMessageSendTimeout), messageId);
     // check message delivery status after 'pingPeriod' seconds.
     Glib::signal_timeout().connect(timeoutSlot, appInstance->mConnection->getPingPeriod() * 1000);
@@ -184,5 +194,14 @@ void ChatWindow::onMessageReceive(guint32 messageId, guint32 flags, Glib::ustrin
   if(makeUrgent && !property_is_active()) {
     set_urgency_hint(true);
     chatTabs->setUrgencyHint(appInstance->mUser->getContact(from), true);
+  }
+}
+
+void ChatWindow::smileButtonToggled() {
+  if(smileButton->get_active()) {
+    appInstance->smileDialog->present();
+  }
+  else {
+    appInstance->smileDialog->hide();
   }
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-24 15:42+0600\n"
+"POT-Creation-Date: 2009-10-02 23:11+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,23 +32,23 @@ msgstr ""
 msgid "Projects:"
 msgstr ""
 
-#: ../src/AboutDialog.cpp:72 ../swift-im/ui.glade.h:4
+#: ../src/AboutDialog.cpp:72 ../swift-im/ui.glade.h:5
 msgid "Information"
 msgstr ""
 
-#: ../src/AboutDialog.cpp:73 ../swift-im/ui.glade.h:5
+#: ../src/AboutDialog.cpp:73 ../swift-im/ui.glade.h:6
 msgid "License"
 msgstr ""
 
-#: ../src/AboutDialog.cpp:74 ../swift-im/ui.glade.h:8
+#: ../src/AboutDialog.cpp:74 ../swift-im/ui.glade.h:11
 msgid "Thanks"
 msgstr ""
 
-#: ../src/ChatTabs.cpp:313
+#: ../src/ChatTabs.cpp:321
 msgid "%1 is typing a message"
 msgstr ""
 
-#: ../src/ChatWindow.cpp:105
+#: ../src/ChatWindow.cpp:112
 msgid "Timeout period expired"
 msgstr ""
 
@@ -60,14 +60,14 @@ msgstr ""
 msgid "Nickname"
 msgstr ""
 
-#: ../src/HistoryTextView.cpp:152
+#: ../src/HistoryTextView.cpp:146
 msgid ""
 "Maybe your message: \n"
 "%1\n"
 "was not delivered. Server answer: %2"
 msgstr ""
 
-#: ../src/LoginDialog.cpp:70 ../src/MrimConnection.cpp:251
+#: ../src/LoginDialog.cpp:70 ../src/MrimConnection.cpp:211
 msgid "Connection error"
 msgstr ""
 
@@ -83,11 +83,11 @@ msgstr ""
 msgid "Messages unread: %1"
 msgstr ""
 
-#: ../src/MrimConnection.cpp:251
+#: ../src/MrimConnection.cpp:211
 msgid "Connection to server has lost"
 msgstr ""
 
-#: ../src/MrimConnection.cpp:251
+#: ../src/MrimConnection.cpp:211
 msgid "Check your connection status"
 msgstr ""
 
@@ -173,37 +173,49 @@ msgid "Authorization"
 msgstr ""
 
 #: ../swift-im/ui.glade.h:3
+msgid "Close window after choosing"
+msgstr ""
+
+#: ../swift-im/ui.glade.h:4
 msgid "E-mail:"
 msgstr ""
 
-#: ../swift-im/ui.glade.h:6
+#: ../swift-im/ui.glade.h:7
+msgid "Number of smiles to insert:"
+msgstr ""
+
+#: ../swift-im/ui.glade.h:8
 msgid "Password:"
 msgstr ""
 
-#: ../swift-im/ui.glade.h:7
-msgid "Send"
-msgstr ""
-
 #: ../swift-im/ui.glade.h:9
-msgid "You are now:"
+msgid "Select smile"
 msgstr ""
 
 #: ../swift-im/ui.glade.h:10
-msgid "_File"
-msgstr ""
-
-#: ../swift-im/ui.glade.h:11
-msgid "_Help"
+msgid "Send"
 msgstr ""
 
 #: ../swift-im/ui.glade.h:12
-msgid "gtk-close"
+msgid "You are now:"
 msgstr ""
 
 #: ../swift-im/ui.glade.h:13
-msgid "gtk-ok"
+msgid "_File"
 msgstr ""
 
 #: ../swift-im/ui.glade.h:14
+msgid "_Help"
+msgstr ""
+
+#: ../swift-im/ui.glade.h:15
+msgid "gtk-close"
+msgstr ""
+
+#: ../swift-im/ui.glade.h:16
+msgid "gtk-ok"
+msgstr ""
+
+#: ../swift-im/ui.glade.h:17
 msgid "gtk-undo"
 msgstr ""

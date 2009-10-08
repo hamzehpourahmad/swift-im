@@ -23,6 +23,7 @@
 using namespace Swift;
 
 MessageTextView::MessageTextView() {
+  buffer = get_buffer();
   set_accepts_tab(false);
   signal_key_press_event().connect(sigc::mem_fun(*this, &MessageTextView::onKeyPressEvent), false);
 }
@@ -32,10 +33,59 @@ bool MessageTextView::onKeyPressEvent(GdkEventKey* event) {
     if((event->state & GDK_CONTROL_MASK) && event->keyval == GDK_Return) {
       // send message
       appInstance->chatWindow->sendButton->clicked();
-      get_buffer()->set_text("");
       // stop executing of other handlers
       return true;
     }
   }
   return false;
+}
+
+void MessageTextView::insertSmile(Glib::ustring smileId) {
+  Glib::RefPtr<Gdk::PixbufAnimation> smilePba = appInstance->getSmileImage(smileId);
+  if(smilePba) {
+    Gtk::Image* smileImg = manage(new Gtk::Image(smilePba));
+    // add smile image and show
+    Glib::RefPtr<Gtk::TextChildAnchor> refAnchor = buffer->create_child_anchor(buffer->get_insert()->get_iter());
+    add_child_at_anchor(*smileImg, refAnchor);
+    smileImg->show_all();
+
+    // save anchor with associated smile id
+    smiles[smileImg] = smileId;
+  }
+}
+
+Glib::ustring MessageTextView::getCleanText() {
+  Glib::ustring result;
+  if(smiles.empty()) {
+    // only text is presented
+    result = buffer->get_text();
+  }
+  else {
+    // iterate over each character and check whether current char is anchor
+    Gtk::TextIter it;
+    for(it = buffer->begin(); it != buffer->end(); it++) {
+      Glib::RefPtr<Gtk::TextChildAnchor> refAnchor = it.get_child_anchor();
+      if(refAnchor) {
+        Glib::ListHandle<Gtk::Widget*> list = refAnchor->get_widgets();
+        Gtk::Image* smile = (Gtk::Image*) *(list.begin());
+        result += _toSmileTag(smiles[smile]);
+      }
+      else {
+        result += it.get_char();
+      }
+    }
+  }
+  return result;
+}
+
+void MessageTextView::cleanup() {
+  smiles.clear();
+  buffer->set_text("");
+}
+
+Glib::ustring MessageTextView::_toSmileTag(Glib::ustring id) {
+  if(id.find("<###") != Glib::ustring::npos) {
+    return id;
+  }
+  return "<SMILE>id=" + id + " alt=''</SMILE>";
 }

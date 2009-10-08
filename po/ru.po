@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Swift-IM-0.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-24 15:42+0600\n"
-"PO-Revision-Date: 2009-09-24 15:43+0600\n"
+"POT-Creation-Date: 2009-10-02 23:11+0600\n"
+"PO-Revision-Date: 2009-10-02 23:13+0600\n"
 "Last-Translator: Галымжан Кожаев <kozhayev@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Poedit-Country: RUSSIAN FEDERATION\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: ../src/ChatTabs.cpp:313
+#: ../src/ChatTabs.cpp:321
 msgid "%1 is typing a message"
 msgstr "%1 пишет вам сообщение"
 
@@ -38,15 +38,19 @@ msgstr "Отошел"
 msgid "Cannot establish connection to server\n"
 msgstr "Не могу установить соединение с сервером\n"
 
-#: ../src/MrimConnection.cpp:251
+#: ../src/MrimConnection.cpp:211
 msgid "Check your connection status"
 msgstr "Проверьте состояние вашего подключения"
 
-#: ../src/LoginDialog.cpp:70 ../src/MrimConnection.cpp:251
+#: ../swift-im/ui.glade.h:3
+msgid "Close window after choosing"
+msgstr "Закрыть окно после выбора"
+
+#: ../src/LoginDialog.cpp:70 ../src/MrimConnection.cpp:211
 msgid "Connection error"
 msgstr "Ошибка соединения"
 
-#: ../src/MrimConnection.cpp:251
+#: ../src/MrimConnection.cpp:211
 msgid "Connection to server has lost"
 msgstr "Соединение с сервером было сброшено"
 
@@ -54,7 +58,7 @@ msgstr "Соединение с сервером было сброшено"
 msgid "Cross-platform IM client for Mail.ru"
 msgstr "Кроссплатформенный клиент мгновенных сообщений для Mail.ru"
 
-#: ../swift-im/ui.glade.h:3
+#: ../swift-im/ui.glade.h:4
 msgid "E-mail:"
 msgstr "E-mail:"
 
@@ -64,7 +68,7 @@ msgstr ""
 "Не могу установить соединение с сервером. Вы действительно подключены к "
 "Интернету?"
 
-#: ../src/AboutDialog.cpp:72 ../swift-im/ui.glade.h:4
+#: ../src/AboutDialog.cpp:72 ../swift-im/ui.glade.h:5
 msgid "Information"
 msgstr "Информация"
 
@@ -76,7 +80,7 @@ msgstr "Внутренняя ошибка сервера"
 msgid "Invisible"
 msgstr "Невидим"
 
-#: ../src/AboutDialog.cpp:73 ../swift-im/ui.glade.h:5
+#: ../src/AboutDialog.cpp:73 ../swift-im/ui.glade.h:6
 msgid "License"
 msgstr "Лицензия"
 
@@ -92,7 +96,7 @@ msgstr "Не удалось авторизоваться\n"
 msgid "Logo design"
 msgstr "Дизайн логотипа"
 
-#: ../src/HistoryTextView.cpp:152
+#: ../src/HistoryTextView.cpp:146
 msgid ""
 "Maybe your message: \n"
 "%1\n"
@@ -118,6 +122,10 @@ msgstr "Непрочитанных писем: %1"
 msgid "Nickname"
 msgstr "Ник"
 
+#: ../swift-im/ui.glade.h:7
+msgid "Number of smiles to insert:"
+msgstr "Количество смайликов  для вставки:"
+
 #: ../src/MrimUtils.cpp:32
 msgid "Offline"
 msgstr "Не в сети"
@@ -126,7 +134,7 @@ msgstr "Не в сети"
 msgid "Online"
 msgstr "В сети"
 
-#: ../swift-im/ui.glade.h:6
+#: ../swift-im/ui.glade.h:8
 msgid "Password:"
 msgstr "Пароль:"
 
@@ -169,7 +177,11 @@ msgstr ""
 "Пользователь-получатель сейчас не в сети и сообщение слишком большое чтобы "
 "поместить его в почтовый ящик"
 
-#: ../swift-im/ui.glade.h:7
+#: ../swift-im/ui.glade.h:9
+msgid "Select smile"
+msgstr "Выбор смайлика"
+
+#: ../swift-im/ui.glade.h:10
 msgid "Send"
 msgstr "Отправить"
 
@@ -177,11 +189,11 @@ msgstr "Отправить"
 msgid "Status"
 msgstr "Статус"
 
-#: ../src/AboutDialog.cpp:74 ../swift-im/ui.glade.h:8
+#: ../src/AboutDialog.cpp:74 ../swift-im/ui.glade.h:11
 msgid "Thanks"
 msgstr "Благодарности"
 
-#: ../src/ChatWindow.cpp:105
+#: ../src/ChatWindow.cpp:112
 msgid "Timeout period expired"
 msgstr "Таймаут истек"
 
@@ -197,27 +209,27 @@ msgstr "Неизвестный"
 msgid "You are logged out."
 msgstr "Вы вышли."
 
-#: ../swift-im/ui.glade.h:9
+#: ../swift-im/ui.glade.h:12
 msgid "You are now:"
 msgstr "Сейчас вы:"
 
-#: ../swift-im/ui.glade.h:10
+#: ../swift-im/ui.glade.h:13
 msgid "_File"
 msgstr "_Файл"
 
-#: ../swift-im/ui.glade.h:11
+#: ../swift-im/ui.glade.h:14
 msgid "_Help"
 msgstr "_Справка"
 
-#: ../swift-im/ui.glade.h:12
+#: ../swift-im/ui.glade.h:15
 msgid "gtk-close"
 msgstr "gtk-close"
 
-#: ../swift-im/ui.glade.h:13
+#: ../swift-im/ui.glade.h:16
 msgid "gtk-ok"
 msgstr "gtk-ok"
 
-#: ../swift-im/ui.glade.h:14
+#: ../swift-im/ui.glade.h:17
 msgid "gtk-undo"
 msgstr "gtk-undo"
 

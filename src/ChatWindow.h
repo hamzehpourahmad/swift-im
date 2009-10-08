@@ -29,7 +29,7 @@ namespace Swift {
 };
 
 #include <gtkmm/window.h>
-#include <gtkmm/button.h>
+#include <gtkmm/togglebutton.h>
 #include <libglademm.h>
 
 #include "ChatTabs.h"
@@ -40,7 +40,9 @@ namespace Swift {
     public:
       ChatWindow(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade);
       ChatTabs* chatTabs;
-      Gtk::Button* sendButton;
+      Gtk::Button *sendButton;
+      Gtk::ToggleButton *smileButton;
+      Gtk::Image* smileImage;
 
     private:
       MessageQueue mMessageQueue;
@@ -50,6 +52,7 @@ namespace Swift {
       // GUI signals
       bool onKeyPressEvent(GdkEventKey* event);
       void sendButtonOnClicked();
+      void smileButtonToggled();
       void onHide();
       bool onWindowStateEvent(GdkEventWindowState* event);
 
