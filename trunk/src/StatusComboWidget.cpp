@@ -50,6 +50,7 @@ StatusComboWidget::StatusComboWidget(BaseObjectType* baseObject, const Glib::Ref
 
 void StatusComboWidget::onChanged() {
   Gtk::TreeModel::iterator iter = get_active();
+  bool restore = true;
   if(iter) {
     Gtk::TreeModel::Row row = *iter;
     if(row[columns.statusCode] == STATUS_OFFLINE) {
@@ -71,10 +72,11 @@ void StatusComboWidget::onChanged() {
          */
         appInstance->loginDialog->resetEntries();
         appInstance->loginDialog->present();
+        restore = false;
       }
     }
   }
-  restoreStatus();
+  if(restore) restoreStatus();
 }
 
 guint32 StatusComboWidget::getStatusCode() {

@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
+<!--Generated with glade3 3.4.3 on Thu Oct 08 10:02:01 2009 -->
 <glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
-  <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="mainWindow">
     <property name="visible">True</property>
     <property name="title">Swift-IM</property>
@@ -10,7 +10,8 @@
     <child>
       <widget class="GtkVBox" id="vBox">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
           <widget class="GtkMenuBar" id="mainMenu">
             <property name="visible">True</property>
@@ -24,8 +25,8 @@
                     <property name="visible">True</property>
                     <child>
                       <widget class="GtkImageMenuItem" id="menuItemExit">
-                        <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
+                        <property name="label">gtk-quit</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="menuItemExitOnActivate"/>
@@ -45,8 +46,8 @@
                     <property name="visible">True</property>
                     <child>
                       <widget class="GtkImageMenuItem" id="menuItemAbout">
-                        <property name="label">gtk-about</property>
                         <property name="visible">True</property>
+                        <property name="label">gtk-about</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -58,7 +59,6 @@
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="position">0</property>
           </packing>
         </child>
         <child>
@@ -74,13 +74,12 @@
               </widget>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <widget class="GtkVSeparator" id="vseparator1">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -91,16 +90,14 @@
             <child>
               <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
                 <child>
                   <widget class="GtkLabel" id="usernameLabel">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
                     <property name="use_markup">True</property>
                   </widget>
-                  <packing>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <widget class="GtkLabel" id="mailStatusLabel">
@@ -127,9 +124,9 @@
           <widget class="GtkScrolledWindow" id="scrolledWindow">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">automatic</property>
-            <property name="vscrollbar_policy">automatic</property>
-            <property name="shadow_type">in</property>
+            <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+            <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+            <property name="shadow_type">GTK_SHADOW_IN</property>
             <child>
               <widget class="GtkTreeView" id="contactsTree">
                 <property name="visible">True</property>
@@ -153,7 +150,6 @@
               </widget>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -180,13 +176,14 @@
     <property name="title" translatable="yes">Authorization</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
-    <property name="window_position">center-always</property>
-    <property name="type_hint">normal</property>
+    <property name="window_position">GTK_WIN_POS_CENTER_ALWAYS</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="loginDialogVBox">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <property name="spacing">2</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
           <widget class="GtkHBox" id="hbox">
             <property name="visible">True</property>
@@ -194,7 +191,8 @@
             <child>
               <widget class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
                 <child>
                   <widget class="GtkLabel" id="loginLabel">
                     <property name="visible">True</property>
@@ -202,7 +200,6 @@
                   </widget>
                   <packing>
                     <property name="fill">False</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -216,14 +213,12 @@
                   </packing>
                 </child>
               </widget>
-              <packing>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <widget class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
                 <child>
                   <widget class="GtkHBox" id="hbox5">
                     <property name="visible">True</property>
@@ -231,37 +226,31 @@
                       <widget class="GtkEntry" id="loginEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">&#x25CF;</property>
+                        <property name="invisible_char">●</property>
                         <signal name="activate" handler="loginButtonOnClicked"/>
                       </widget>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <widget class="GtkComboBox" id="domainCombo">
                         <property name="visible">True</property>
                       </widget>
                       <packing>
-                        <property name="pack_type">end</property>
+                        <property name="pack_type">GTK_PACK_END</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
                   </widget>
-                  <packing>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <widget class="GtkEntry" id="passwordEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="visibility">False</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                     <signal name="activate" handler="loginButtonOnClicked"/>
                   </widget>
                   <packing>
-                    <property name="pack_type">end</property>
+                    <property name="pack_type">GTK_PACK_END</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -280,29 +269,30 @@
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="loginDialogActionArea">
             <property name="visible">True</property>
-            <property name="layout_style">end</property>
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
               <widget class="GtkButton" id="loginButton">
-                <property name="label" translatable="yes">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-ok</property>
                 <property name="use_stock">True</property>
+                <property name="response_id">0</property>
                 <signal name="clicked" handler="loginButtonOnClicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <widget class="GtkButton" id="cancelLoginButton">
-                <property name="label" translatable="yes">gtk-undo</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-undo</property>
                 <property name="use_stock">True</property>
+                <property name="response_id">0</property>
                 <signal name="clicked" handler="cancelLoginButtonOnClicked"/>
               </widget>
               <packing>
@@ -314,7 +304,7 @@
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="pack_type">end</property>
+            <property name="pack_type">GTK_PACK_END</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -322,14 +312,15 @@
     </child>
   </widget>
   <widget class="GtkWindow" id="chatWindow">
-    <property name="window_position">center</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="default_width">800</property>
     <property name="default_height">400</property>
     <child>
       <widget class="GtkVBox" id="chatWindowVBox">
         <property name="visible">True</property>
         <property name="border_width">10</property>
-        <property name="orientation">vertical</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
           <widget class="GtkNotebook" id="chatTabs">
             <property name="visible">True</property>
@@ -367,33 +358,50 @@
               </packing>
             </child>
           </widget>
-          <packing>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
-          <widget class="GtkHButtonBox" id="chatWindowHButtonBox">
+          <widget class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
-            <property name="spacing">5</property>
-            <property name="layout_style">end</property>
+            <child>
+              <widget class="GtkAlignment" id="alignment1">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="xscale">0</property>
+                <property name="yscale">0</property>
+                <child>
+                  <widget class="GtkToggleButton" id="smileButton">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="focus_on_click">False</property>
+                    <property name="response_id">0</property>
+                    <child>
+                      <widget class="GtkImage" id="smileImage">
+                        <property name="visible">True</property>
+                        <property name="pixbuf">select-smile.png</property>
+                        <property name="icon_size">0</property>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+            </child>
             <child>
               <widget class="GtkButton" id="sendButton">
-                <property name="label" translatable="yes">Send</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="yalign">0.51999998092651367</property>
+                <property name="label" translatable="yes">Send</property>
+                <property name="response_id">0</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="padding">5</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -403,24 +411,25 @@
   <widget class="GtkDialog" id="aboutDialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">About Swift-IM</property>
-    <property name="window_position">center-on-parent</property>
+    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <property name="default_width">400</property>
     <property name="default_height">400</property>
     <property name="destroy_with_parent">True</property>
-    <property name="type_hint">normal</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <property name="transient_for">mainWindow</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox3">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <property name="spacing">2</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
           <widget class="GtkLabel" id="title">
             <property name="visible">True</property>
             <property name="use_markup">True</property>
-            <property name="justify">center</property>
+            <property name="justify">GTK_JUSTIFY_CENTER</property>
           </widget>
           <packing>
             <property name="expand">False</property>
@@ -443,24 +452,23 @@
             <child>
               <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
                 <child>
                   <widget class="GtkLabel" id="description">
                     <property name="visible">True</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">center</property>
+                    <property name="justify">GTK_JUSTIFY_CENTER</property>
                   </widget>
-                  <packing>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <widget class="GtkButton" id="linkButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="relief">none</property>
+                    <property name="relief">GTK_RELIEF_NONE</property>
                     <property name="focus_on_click">False</property>
+                    <property name="response_id">0</property>
                     <child>
                       <widget class="GtkLabel" id="link">
                         <property name="visible">True</property>
@@ -481,17 +489,17 @@
                 <property name="label" translatable="yes">Information</property>
               </widget>
               <packing>
-                <property name="tab_fill">False</property>
                 <property name="type">tab</property>
+                <property name="tab_fill">False</property>
               </packing>
             </child>
             <child>
               <widget class="GtkScrolledWindow" id="scrolledwindow1">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="vscrollbar_policy">automatic</property>
-                <property name="shadow_type">in</property>
+                <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <property name="shadow_type">GTK_SHADOW_IN</property>
                 <child>
                   <widget class="GtkTextView" id="textview1">
                     <property name="visible">True</property>
@@ -1184,17 +1192,17 @@ Public License instead of this License.  But first, please read
                 <property name="label" translatable="yes">License</property>
               </widget>
               <packing>
+                <property name="type">tab</property>
                 <property name="position">1</property>
                 <property name="tab_fill">False</property>
-                <property name="type">tab</property>
               </packing>
             </child>
             <child>
               <widget class="GtkScrolledWindow" id="scrolledwindow2">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="vscrollbar_policy">automatic</property>
+                <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                 <child>
                   <widget class="GtkTextView" id="thanksTV">
                     <property name="visible">True</property>
@@ -1213,9 +1221,9 @@ Public License instead of this License.  But first, please read
                 <property name="label" translatable="yes">Thanks</property>
               </widget>
               <packing>
+                <property name="type">tab</property>
                 <property name="position">2</property>
                 <property name="tab_fill">False</property>
-                <property name="type">tab</property>
               </packing>
             </child>
           </widget>
@@ -1226,17 +1234,18 @@ Public License instead of this License.  But first, please read
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="dialog-action_area3">
             <property name="visible">True</property>
-            <property name="layout_style">end</property>
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
               <placeholder/>
             </child>
             <child>
               <widget class="GtkButton" id="closeButton">
-                <property name="label" translatable="yes">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-close</property>
                 <property name="use_stock">True</property>
+                <property name="response_id">0</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -1247,8 +1256,83 @@ Public License instead of this License.  But first, please read
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
+            <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkWindow" id="smileDialog">
+    <property name="title" translatable="yes">Select smile</property>
+    <property name="resizable">False</property>
+    <property name="default_width">200</property>
+    <property name="default_height">200</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="icon_name">face-wink</property>
+    <property name="skip_taskbar_hint">True</property>
+    <property name="skip_pager_hint">True</property>
+    <property name="transient_for">chatWindow</property>
+    <child>
+      <widget class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+        <child>
+          <widget class="GtkCheckButton" id="closeWindow">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="label" translatable="yes">Close window after choosing</property>
+            <property name="response_id">0</property>
+            <property name="active">True</property>
+            <property name="draw_indicator">True</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="padding">5</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkLabel" id="label2">
+                <property name="visible">True</property>
+                <property name="xpad">5</property>
+                <property name="label" translatable="yes">Number of smiles to insert:</property>
+                <property name="use_markup">True</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkSpinButton" id="smileNumber">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">●</property>
+                <property name="numeric">True</property>
+                <property name="update_policy">GTK_UPDATE_IF_VALID</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkTable" id="table">
+            <property name="visible">True</property>
+            <child>
+              <placeholder/>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">2</property>
           </packing>
         </child>
       </widget>

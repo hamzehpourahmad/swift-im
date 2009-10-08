@@ -50,7 +50,7 @@ namespace Swift {
     private:
       Glib::RefPtr<Gtk::TextBuffer> buffer;
       MessageBoundsList history;
-      void addMessage(Glib::ustring msg, bool me);
+      void addMessage(Glib::ustring msg, Glib::ustring tagName = "");
       void insertTime();
       void newLine();
       bool scanSmiles(Glib::ustring str, std::vector<TextPart> *textParts);

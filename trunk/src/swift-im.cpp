@@ -20,7 +20,6 @@
 #include <gtkmm/main.h>
 
 #include "Application.h"
-#include "MainWindow.h"
 
 using namespace Swift;
 

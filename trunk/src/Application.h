@@ -53,6 +53,7 @@ namespace Swift {
 #include "MrimClient.h"
 #include "MrimConnection.h"
 #include "MrimLoggedUser.h"
+#include "SmileDialog.h"
 
 #define appInstance Application::getInstance()
 
@@ -74,10 +75,12 @@ namespace Swift {
       static Application* getInstance();
       Glib::RefPtr<Gdk::Pixbuf> getStatusImage(guint32 statusCode);
       Glib::RefPtr<Gdk::PixbufAnimation> getSmileImage(Glib::ustring smileId);
+      std::map <Glib::ustring, Glib::RefPtr<Gdk::PixbufAnimation> > getSmilesAll() const;
       MainWindow* mainWindow;
       LoginDialog* loginDialog;
       ChatWindow* chatWindow;
       AboutDialog* aboutDialog;
+      SmileDialog* smileDialog;
       MrimClient* mClient;
       MrimConnection* mConnection;
       Glib::RefPtr<Gnome::Glade::Xml> xml;

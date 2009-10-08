@@ -36,6 +36,13 @@ namespace Swift {
 #include "SocketHeaders.h"
 
 namespace Swift {
+  /* SignalConnectionHangup emitted when TCP connection lost.
+   * Parameters:
+   *  None
+   * Handlers:
+   *  - MrimConnection::onConnectionHangup()
+   */
+  typedef sigc::signal<void> SignalConnectionHangup;
   const gulong SEND_WAIT_TIME = 1000;
   const Glib::ustring GET_IPPORT_HOST = "mrim.mail.ru";
   const gint GET_IPPORT_PORT = 2042;
@@ -45,7 +52,6 @@ namespace Swift {
       // methods
       MrimConnection();
       bool connect();
-      void disconnect();
       guint32 getCommandNumber();
       guint32 getPingPeriod();
       void updateCommandNumber();
@@ -58,6 +64,7 @@ namespace Swift {
       UIDL readUIDL();
       bool readHeader(mrim_packet_header_t *header);
       void readUnknownData(gchar *buffer, size_t len);
+      SignalConnectionHangup signal_connection_hangup();
 
     private:
       // methods
@@ -71,7 +78,6 @@ namespace Swift {
 
       void pingCallback();
       bool listenCallback(Glib::IOCondition condition);
-      bool connectionHangupCallback(Glib::IOCondition condition);
 
       // members
       bool mConnected, mIsPinging;
@@ -80,8 +86,10 @@ namespace Swift {
       sockaddr_in mDestinationAddress;
       Glib::Thread* mPingThread;
       sigc::connection mListenConnection;
+      SignalConnectionHangup mSignalConnectionHangup;
 
     protected:
+      void onConnectionHangup();
       // mrim signal handlers
       void onHelloAck(guint32 pingPeriod);
       void onLogout(guint32 reason);

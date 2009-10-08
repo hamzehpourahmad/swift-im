@@ -1,5 +1,5 @@
 /*
- *      MessageTextView.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
+ *      SmileDialog.h - this file is part of Swift-IM, cross-platform IM client for Mail.ru
  *
  *      Copyright (c) 2009 Галымжан Кожаев <kozhayev(at)gmail(dot)com>
  *
@@ -17,38 +17,34 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MessageTextView_h
-#define MessageTextView_h
+#ifndef SmileDialog_h
+#define SmileDialog_h
 
 namespace Swift {
-  class MessageTextView;
+  class SmileDialog;
 };
 
-#include <map>
-#include <algorithm>
-
-#include <gtkmm/textview.h>
-#include <gtkmm/image.h>
-
+#include <gtkmm/window.h>
+#include <gtkmm/table.h>
+#include <gtkmm/spinbutton.h>
+#include <gtkmm/checkbutton.h>
+#include <libglademm.h>
 
 namespace Swift {
-
-  typedef std::map<Gtk::Image*, Glib::ustring > SmileList;
-  class MessageTextView : public Gtk::TextView {
+  class SmileDialog : public Gtk::Window {
     public:
-      MessageTextView();
-      void insertSmile(Glib::ustring smileId);
-      Glib::ustring getCleanText();
-      void cleanup();
+      SmileDialog(BaseObjectType* baseObject, const Glib::RefPtr<Gnome::Glade::Xml>& refGlade);
 
     private:
-      Glib::ustring _toSmileTag(Glib::ustring id);
-      Glib::RefPtr<Gtk::TextBuffer> buffer;
-      SmileList smiles;
+      Gtk::Table *table;
+      Gtk::CheckButton *closeWindow;
+      Gtk::SpinButton *smileNumber;
 
     protected:
       // signal handlers
-      bool onKeyPressEvent(GdkEventKey* event);
+      void onHide();
+      void onSmileClicked(Glib::ustring smileId);
   };
 };
-#endif //MessageTextView_h
+
+#endif //SmileDialog_h

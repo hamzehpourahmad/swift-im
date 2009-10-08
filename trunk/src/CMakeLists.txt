@@ -44,6 +44,7 @@ SET(PROJECT_SOURCES
     MrimPacket.cpp
     MrimSignalServer.cpp
     MrimUtils.cpp
+    SmileDialog.cpp
     StatusComboColumns.cpp
     StatusComboWidget.cpp
     swift-im.cpp
@@ -71,6 +72,7 @@ SET(PROJECT_HEADERS
     MrimSignalServer.h
     MrimUtils.h
     Protocol.h
+    SmileDialog.h
     SocketHeaders.h
     StatusComboColumns.h
     StatusComboWidget.h

@@ -109,7 +109,8 @@ gint ChatTabs::createTab(ustring contactAddress) {
    *
    * tabLabelBox (hbox)
    *    - tabCaption (Label) Displays nickname as a tab title
-   *    - closeButton (Button)  Displays tab closing button
+   *    - closeAlignment (Alignment)
+   *        - closeButton (Button)  Displays tab closing button
    * tabContentBox (VBox)
    *    - contactInfoBox (VBox)
    *        - contactInfoUpperPart (HBox)
@@ -135,6 +136,7 @@ gint ChatTabs::createTab(ustring contactAddress) {
   Gtk::HBox* tabLabelBox = manage(new Gtk::HBox());
   Gtk::Label* tabCaption = manage(new Gtk::Label(c.getNickname()));
   Gtk::Image* closeImage = manage(new Gtk::Image(Gtk::Stock::CLOSE, Gtk::ICON_SIZE_MENU));
+  Gtk::Alignment* closeAlignment = manage(new Gtk::Alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_TOP, 0.0, 0.0));
   closeImage->set_padding(0, 0);
   Gtk::Button* closeButton = manage(new Gtk::Button);
 
@@ -176,6 +178,9 @@ gint ChatTabs::createTab(ustring contactAddress) {
    */
   vPanel->set_position(DEFAULT_VPANEL_POSITION);
 
+  // close Alignment
+  closeAlignment->set_padding(0, 0, 0, 0);
+
   /*
    * close button
    */
@@ -209,9 +214,12 @@ gint ChatTabs::createTab(ustring contactAddress) {
 
   // 3. Packing widgets
 
+  // packing button into alignment
+  closeAlignment->add(*closeButton);
+
   // packing tab label into hbox
   tabLabelBox->pack_start(*tabCaption);
-  tabLabelBox->pack_start(*closeButton);
+  tabLabelBox->pack_start(*closeAlignment);
 
   // packing text views into scrolled windows
   historyTextScroll->add(*historyTextView);
